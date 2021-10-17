@@ -6,7 +6,9 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/eppverification)](https://CRAN.R-project.org/package=eppverification)
 [![R-CMD-check](https://github.com/jobstdavid/eppverification/workflows/R-CMD-check/badge.svg)](https://github.com/jobstdavid/eppverification/actions)
+[![codecov](https://codecov.io/gh/jobstdavid/eppverification/branch/master/graph/badge.svg?token=WJ7XWFO9PT)](https://codecov.io/gh/jobstdavid/eppverification)
 [![version](https://img.shields.io/badge/version-0.1.0-green.svg?style=flat)](https://github.com/jobstdavid/eppverification)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5574573.svg)](https://doi.org/10.5281/zenodo.5574573)
 <!-- badges: end -->
 
 An R package providing user-friendly **univariate and multivariate
