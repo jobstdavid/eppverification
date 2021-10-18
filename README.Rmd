@@ -38,8 +38,8 @@ remotes::install_github("jobstdavid/eppverification")
 The goal of probabilistic forecasting is to maximize the **sharpness** of the probabilistic forecast *F* (CDF) subject to **calibration**. Therefore this package contains tools for assessing: 
 
 * **calibration (reliability)**. It  refers to the statistical consistency between the predictive probabilistic forecast *F* and the associated observation *y*. Consequently it is a joint property of predictions and verifications. The predictive probabilistic forecast *F* is calibrated, if the observation *y* can not be distinguished from a random draw from the predictive probabilistic forecast *F*.
-* **sharpness**. It refers to the dispersion (spread) of the predictive probabilistic forecast *F*. Additionally it is a a property of the predictive probabilistic forecast *F*, only. The more concentrated/narrower the predictive probabilistic forecast *F* is, the sharper the forecast is.
-* **calbibration and sharpness simultaneously**. Proper scoring rules assess calibration and sharpness properties of the predictive probabilistic forecast *F* simultaneously. They are functions of the predictive probabilistic forecast *F* and the associated observation *y*. A smaller score of a proper scoring rule indicates a "better" forecast.
+* **sharpness**. It refers to the dispersion (spread) of the predictive probabilistic forecast *F*. Additionally it is a property of the predictive probabilistic forecast *F*, only. The more concentrated/narrower the predictive probabilistic forecast *F* is, the sharper the forecast is.
+* **calibration and sharpness simultaneously**. Proper scoring rules assess calibration and sharpness properties of the predictive probabilistic forecast *F* simultaneously. They are functions of the predictive probabilistic forecast *F* and the associated observation *y*. A smaller score of a proper scoring rule indicates a "better" forecast.
 
 In the following you find univariate and multivariate verification tools for calibration, sharpness and proper scoring rules, where the corresponding function provided within this package is written in brackets. 
 

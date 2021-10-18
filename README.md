@@ -42,11 +42,11 @@ Therefore this package contains tools for assessing:
     distinguished from a random draw from the predictive probabilistic
     forecast *F*.
 -   **sharpness**. It refers to the dispersion (spread) of the
-    predictive probabilistic forecast *F*. Additionally it is a a
-    property of the predictive probabilistic forecast *F*, only. The
-    more concentrated/narrower the predictive probabilistic forecast *F*
-    is, the sharper the forecast is.
--   **calbibration and sharpness simultaneously**. Proper scoring rules
+    predictive probabilistic forecast *F*. Additionally it is a property
+    of the predictive probabilistic forecast *F*, only. The more
+    concentrated/narrower the predictive probabilistic forecast *F* is,
+    the sharper the forecast is.
+-   **calibration and sharpness simultaneously**. Proper scoring rules
     assess calibration and sharpness properties of the predictive
     probabilistic forecast *F* simultaneously. They are functions of the
     predictive probabilistic forecast *F* and the associated observation
