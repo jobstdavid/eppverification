@@ -25,7 +25,7 @@ You can install the latest development version from
 
 ``` r
 #install.packages("remotes")
-remotes::install.github("jobstdavid/eppverification")
+remotes::install_github("jobstdavid/eppverification")
 ```
 
 ## Package overview
@@ -337,7 +337,7 @@ box.plot(x = x, names = names, x.lab = "Models", y.lab = "Values")
 ## Contact
 
 Feel free to contact <jobst@imai.uni-hildesheim.de> if you have any
-questions or sugggestions.
+questions or suggestions.
 
 ## References
 
