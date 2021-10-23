@@ -48,9 +48,9 @@ x <- array(NA, dim = c(m, 2, n))
 x[, 1, ] <- rnorm(n*m)
 x[, 2, ] <- rgamma(n*m, shape = 1)
 
-#mri calculation
-mri(y = y, x = x)
-mri(y = y, x = x, bins = 17, method = "bd")
+#multivariate entropy calculation
+ment(y = y, x = x)
+ment(y = y, x = x, bins = 17, method = "bd")
 
 }
 \references{

@@ -8,6 +8,7 @@
 #' @param type character; "\code{relative}", "\code{absolute}" and "\code{density}"; default: "\code{relative}" (see details)
 #' @param title character; title of the plot; default: "\code{Verification Rank Histogram}"
 #' @param ri logical; if \code{TRUE} the reliability index is calculated for the plot (see details); if \code{FALSE} the reliability index is not calculated; default: \code{FALSE}
+#' @param ent logical; if \code{TRUE} the entropy is calculated for the plot (see details); if \code{FALSE} the entropy  is not calculated; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{x} should be given as matrix
@@ -33,6 +34,9 @@
 #' The smaller the RI, the better is the calibration of the forecast. The
 #' optimal value of the RI is 0.
 #'
+#' The entropy is a tool to assess the calibration of a forecast. The optimal
+#' value of the entropy is 1, representing a calibrated forecast.
+#'
 #' @return
 #' ggplot object with a plot of the Verification Rank Histogram.
 #'
@@ -45,9 +49,9 @@
 #'
 #' #vr.hist plot
 #' vr.hist(y = y, x = x)
-#' vr.hist(y = y, x = x, bins = 17, title = "VRH", ri = TRUE)
-#' vr.hist(y = y, x = x, bins = 17, type = "absolute", ri = TRUE)
-#' vr.hist(y = y, x = x, bins = 17, type = "density", ri = TRUE)
+#' vr.hist(y = y, x = x, bins = 17, title = "VRH", ri = TRUE, ent = FALSE)
+#' vr.hist(y = y, x = x, bins = 3, type = "absolute", ri = FALSE, ent = TRUE)
+#' vr.hist(y = y, x = x, bins = 3, type = "density", ri = TRUE, ent = TRUE)
 #'
 #' @references
 #' Anderson, J. (1996). A method for producing and evaluating probabilistic forecasts from ensemble model integrations. Journal of Climate, 9, 1518-1530.
@@ -60,6 +64,10 @@
 #'
 #' Hamill, T. (2001). Interpretation of rank histograms for verifying ensemble forecasts. Monthly Weather Review, 129, 550-560.
 #'
+#' Taillardat, M., Mestre, O., Zamo, M. and Naveau, P., (2016). Calibrated Ensemble Forecasts Using Quantile Regression Forests and Ensemble Model Output Statistics. American Meteorological Society, 144, 2375-2393.
+#'
+#' Tribus, M. (1969). Rational Descriptions, Descisions and Designs. Pergamon Press.
+#'
 #' Talagrand, O., Vautard, R. and Strauss, B. (1997). Evaluation of probabilistic prediction systems. Workshop on Predictability (ECMWF), 1-25.
 #'
 #' @author David Jobst
@@ -68,7 +76,7 @@
 #'
 #' @importFrom ggplot2 ggplot geom_histogram geom_hline ggtitle aes labs xlab ylab scale_x_continuous theme element_text stat
 #' @export
-vr.hist <- function (y, x, bins = NULL, type = "relative", title = "Verification Rank Histogram", ri = FALSE) {
+vr.hist <- function (y, x, bins = NULL, type = "relative", title = "Verification Rank Histogram", ri = FALSE, ent = FALSE) {
 
   ranks <- rnk(y, x)
   k <- ncol(x)
@@ -129,11 +137,25 @@ vr.hist <- function (y, x, bins = NULL, type = "relative", title = "Verification
     stop("This type is not available!")
   }
 
-  if (ri == TRUE) {
+  if (ri == TRUE & ent == FALSE) {
     ri <- sum(abs(cnt/length(ranks) - 1/bins))
-    rel.index <- round(ri, 3)
-    h <- h + labs(subtitle = paste0("RI = ", sep = "", rel.index))
+    rel.index <- round(ri, 4)
+    h <- h + labs(subtitle = bquote(Delta == .(rel.index)))
+  } else if (ri == FALSE & ent == TRUE) {
+    f <- cnt/length(ranks)
+    ent <- -1/log(bins) * sum(f*log(f))
+    ent <- round(ent, 4)
+    h <- h + labs(subtitle = bquote(Omega == .(ent)))
+  } else if (ri == TRUE & ent == TRUE) {
+    ri <- sum(abs(cnt/length(ranks) - 1/bins))
+    rel.index <- round(ri, 4)
+    f <- cnt/length(ranks)
+    ent <- -1/log(bins) * sum(f*log(f))
+    ent <- round(ent, 4)
+    h <- h + labs(subtitle = bquote(paste(Delta == .(rel.index), sep = ", ", Omega == .(ent))))
   }
+
   return(h)
 }
+
 

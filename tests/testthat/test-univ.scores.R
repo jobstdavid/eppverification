@@ -127,6 +127,13 @@ test_that("Var(PIT)", {
   expect_equal(var.pit(u = u), var(u))
 })
 
+test_that("E(PIT)", {
+  n <- 1000
+  u <- runif(n)
+
+  expect_equal(m.pit(u = u), mean(u))
+})
+
 test_that("rnk, ri", {
   n <- 30
   m <- 50

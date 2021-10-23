@@ -9,7 +9,8 @@ pit.hist(
   bins = NULL,
   type = "density",
   title = "PIT Histogram",
-  var = FALSE
+  var = FALSE,
+  m = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ pit.hist(
 \item{title}{character; title of the plot; default: "\code{PIT Histogram}"}
 
 \item{var}{logical; if \code{TRUE} the variance of the PIT values is calculated for the plot (see details); if \code{FALSE} the variance of the PIT values is not calculated; default: \code{FALSE}}
+
+\item{m}{logical; if \code{TRUE} the expectation of the PIT values is calculated for the plot (see details); if \code{FALSE} the expectation of the PIT values is not calculated; default: \code{FALSE}}
 }
 \value{
 ggplot object with a plot of the PIT histogram.
@@ -49,6 +52,10 @@ The variance of the PIT values (Var(PIT)) provides information on the dispersion
 A variance of the PIT values equal to 1/12 ≈ 0.0833 corresponds to the variance of the uniform distribution
 on [0,1], which is desirable. A variance greater than 1/12 indicates underdispersion and a
 variance smaller than 1/12 indicates overdispersion of the predictive distribution.
+
+The expectation value of the PIT values (E(PIT)) provides information on the bias of a predictive distribution.
+An expectation of the PIT values equal to 1/2 corresponds to the expectation of the uniform distribution
+on [0,1], which is desirable. Any deviation from 1/2 indicates that the predictive distribution is biased.
 }
 \examples{
 #simulated data
@@ -57,9 +64,9 @@ u <- runif(n)
 
 #pit plot
 pit.hist(u = u)
-pit.hist(u = u, bins = 5, title = "PITH", var = TRUE)
-pit.hist(u = u, bins = 5, type = "relative", var = TRUE)
-pit.hist(u = u, bins = 5, type = "absolute", var = TRUE)
+pit.hist(u = u, bins = 5, title = "PITH", var = TRUE, m = FALSE)
+pit.hist(u = u, bins = 5, type = "relative", var = FALSE, m = TRUE)
+pit.hist(u = u, bins = 5, type = "absolute", var = TRUE, m = TRUE)
 
 
 }

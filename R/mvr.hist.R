@@ -9,6 +9,7 @@
 #' @param type character; "\code{relative}", "\code{absolute}" and "\code{density}"; default: "\code{relative}" (see details)
 #' @param title character; title of the plot; default: "\code{Multivariate Verification Rank Histogram}"
 #' @param ri logical; if \code{TRUE} the multivariate reliability index is calculated for the plot (see details); if \code{FALSE} the multivariate reliability index is not calculated; default: \code{FALSE}
+#' @param ent logical; if \code{TRUE} the entropy is calculated for the plot (see details); if \code{FALSE} the entropy  is not calculated; default: \code{FALSE}
 #'
 #' @details
 #' The observations are given in the matrix \code{y} with n rows, where each column belongs to an univariate observation variable.
@@ -44,6 +45,9 @@
 #' The smaller the RI, the better is the calibration of the forecast. The
 #' optimal value of the RI is 0.
 #'
+#' The entropy is a tool to assess the calibration of a forecast. The optimal
+#' value of the entropy is 1, representing a calibrated forecast.
+#'
 #' @return
 #' ggplot object with a plot of the Multivariate Verification Rank Histogram.
 #'
@@ -58,11 +62,12 @@
 #'
 #' #mvr.hist plot
 #' mvr.hist(y = y, x = x)
-#' mvr.hist(y = y, x = x, bins = 17, method = "bd", title = "MVRH", ri = TRUE)
-#' mvr.hist(y = y, x = x, bins = 17, method = "bd", type = "absolute",
-#' ri = TRUE)
-#' mvr.hist(y = y, x = x, bins = 17, method = "bd", type = "density",
-#' ri = TRUE)
+#' mvr.hist(y = y, x = x, bins = 17, method = "bd", title = "MVRH",
+#' ri = TRUE, ent = FALSE)
+#' mvr.hist(y = y, x = x, bins = 3, method = "bd", type = "absolute",
+#' ri = FALSE, ent = TRUE)
+#' mvr.hist(y = y, x = x, bins = 3, method = "bd", type = "density",
+#' ri = TRUE, ent = TRUE)
 #'
 #' @references
 #' Delle Monache, L., Hacker, J., Zhou, Y., Deng, X. and Stull, R., (2006). Probabilistic aspects of meteorological and ozone regional ensemble forecasts. Journal of Geophysical Research: Atmospheres, 111, D24307.
@@ -71,7 +76,11 @@
 #'
 #' Smith, L. and Hansen, J. (2004). Extending the limits of ensemble forecast verification with the minimum spanning tree. Monthly Weather Review, 132, 1522-1528.
 #'
+#' Taillardat, M., Mestre, O., Zamo, M. and Naveau, P., (2016). Calibrated Ensemble Forecasts Using Quantile Regression Forests and Ensemble Model Output Statistics. American Meteorological Society, 144, 2375-2393.
+#'
 #' Thorarinsdottir, T., Scheurer, M. and Heinz, C. (2016). Assessing the calibration of high-dimensional ensemble forecasts using rank histograms. Journal of Computational and Graphical Statistics, 25, 105-122.
+#'
+#' Tribus, M. (1969). Rational Descriptions, Descisions and Designs. Pergamon Press.
 #'
 #' Wilks, D. (2004). The minimum spanning tree histogram as verification tool for multidimensional ensemble forecasts. Monthly Weather Review, 132, 1329-1340.
 #'
@@ -81,7 +90,7 @@
 #'
 #' @importFrom ggplot2 ggplot geom_histogram geom_hline ggtitle aes labs xlab ylab scale_x_continuous theme element_text stat
 #' @export
-mvr.hist <- function (y, x, method = "mv", type = "relative", bins = NULL, title = NULL, ri = FALSE) {
+mvr.hist <- function (y, x, method = "mv", type = "relative", bins = NULL, title = NULL, ri = FALSE, ent = FALSE) {
 
   ranks <- mrnk(y, x, method)
   k <- nrow(x[, , 1])
@@ -142,10 +151,22 @@ mvr.hist <- function (y, x, method = "mv", type = "relative", bins = NULL, title
     stop("This type is not available!")
   }
 
-  if (ri == TRUE) {
-    mri <- sum(abs(cnt/length(ranks) - 1/bins))
-    rel.index <- round(mri, 3)
-    h <- h + labs(subtitle = paste0("RI = ", sep = "", rel.index))
+  if (ri == TRUE & ent == FALSE) {
+    ri <- sum(abs(cnt/length(ranks) - 1/bins))
+    rel.index <- round(ri, 4)
+    h <- h + labs(subtitle = bquote(Delta == .(rel.index)))
+  } else if (ri == FALSE & ent == TRUE) {
+    f <- cnt/length(ranks)
+    ent <- -1/log(bins) * sum(f*log(f))
+    ent <- round(ent, 4)
+    h <- h + labs(subtitle = bquote(Omega == .(ent)))
+  } else if (ri == TRUE & ent == TRUE) {
+    ri <- sum(abs(cnt/length(ranks) - 1/bins))
+    rel.index <- round(ri, 4)
+    f <- cnt/length(ranks)
+    ent <- -1/log(bins) * sum(f*log(f))
+    ent <- round(ent, 4)
+    h <- h + labs(subtitle = bquote(paste(Delta == .(rel.index), sep = ", ", Omega == .(ent))))
   }
 
   return(h)
