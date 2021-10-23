@@ -1,5 +1,5 @@
 
-# eppverification: Verification Tools for the Statistical Postprocessing of Ensemble Forecasts
+# eppverification: Verification Tools for the Statistical Postprocessing of Ensemble Forecasts <img src='man/figures/sticker.png' align="right" height="150" />
 
 <!-- badges: start -->
 

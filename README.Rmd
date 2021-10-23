@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 ```
 
 
-# eppverification: Verification Tools for the Statistical Postprocessing of Ensemble Forecasts 
+# eppverification: Verification Tools for the Statistical Postprocessing of Ensemble Forecasts <img src='man/figures/sticker.png' align="right" height="150" />
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/eppverification)](https://CRAN.R-project.org/package=eppverification)
 [![R-CMD-check](https://github.com/jobstdavid/eppverification/workflows/R-CMD-check/badge.svg)](https://github.com/jobstdavid/eppverification/actions)
