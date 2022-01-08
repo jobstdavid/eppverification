@@ -1,6 +1,6 @@
-#' Multivariate Reliability Index
+#' Multivariate Entropy
 #'
-#' This function calculates the Multivariate Reliability Index (RI) given observations of a multivariate variable and ensemble forecasts/samples of a predictive distribution.
+#' This function calculates the Multivariate Entropy given observations of a multivariate variable and ensemble forecasts/samples of a predictive distribution.
 #'
 #' @param y matrix of observations (see details)
 #' @param x 3-dimensional array of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
@@ -21,9 +21,8 @@
 #' "\code{avg}" stands for "average ranks", "\code{mst}" stands for "minimum-spanning-tree ranks" and
 #' "\code{bd}" stands for "band-depth ranks". These methods are implemented as described in e.g. Thorarinsdottir et al. (2016).
 #'
-#' The deviation from uniformity of the MVRH can be quantified by the multivariate reliability index (RI).
-#' The smaller the RI, the better is the calibration of the forecast. The
-#' optimal value of the RI is 0.
+#' The entropy is a tool to assess the calibration of a forecast. The optimal
+#' value of the entropy is 1, representing a calibrated forecast.
 #'
 #' @return
 #' Vector of the score value.
@@ -38,8 +37,7 @@
 #' x[, 2, ] <- rgamma(n*m, shape = 1)
 #'
 #' #multivariate entropy calculation
-#' ment(y = y, x = x)
-#' ment(y = y, x = x, bins = 17, method = "bd")
+#' ment(y = y, x = x, bins = 3, method = "bd")
 #'
 #' @references
 #' Delle Monache, L., Hacker, J., Zhou, Y., Deng, X. and Stull, R., (2006). Probabilistic aspects of meteorological and ozone regional ensemble forecasts. Journal of Geophysical Research: Atmospheres, 111, D24307.
@@ -48,16 +46,20 @@
 #'
 #' Smith, L. and Hansen, J. (2004). Extending the limits of ensemble forecast verification with the minimum spanning tree. Monthly Weather Review, 132, 1522-1528.
 #'
+#' Taillardat, M., Mestre, O., Zamo, M. and Naveau, P., (2016). Calibrated Ensemble Forecasts Using Quantile Regression Forests and Ensemble Model Output Statistics. American Meteorological Society, 144, 2375-2393.
+#'
 #' Thorarinsdottir, T., Scheurer, M. and Heinz, C. (2016). Assessing the calibration of high-dimensional ensemble forecasts using rank histograms. Journal of Computational and Graphical Statistics, 25, 105-122.
+#'
+#' Tribus, M. (1969). Rational Descriptions, Descisions and Designs. Pergamon Press.
 #'
 #' Wilks, D. (2004). The minimum spanning tree histogram as verification tool for multidimensional ensemble forecasts. Monthly Weather Review, 132, 1329-1340.
 #'
 #' @author David Jobst
 #'
-#' @rdname mri
+#' @rdname ment
 #'
 #' @export
-mri <- function(y, x, method = "mv", bins = NULL) {
+ment <- function(y, x, method = "mv", bins = NULL) {
 
   ranks <- mrnk(y, x, method)
   k <- nrow(x[, , 1])
@@ -81,7 +83,12 @@ mri <- function(y, x, method = "mv", bins = NULL) {
   cnt <- table(ranks)
   tab[2, as.numeric(names(cnt))] <- as.numeric(cnt)
   cnt <- tab[2, ]
-  mri <- sum(abs(cnt/length(ranks) - 1/bins))
+  f <- cnt/length(ranks)
+  ent <- -1/log(bins) * sum(f*log(f))
 
-  return(as.numeric(mri))
+  return(as.numeric(ent))
 }
+
+
+
+
