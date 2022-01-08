@@ -32,7 +32,8 @@ given ensemble forecasts in \code{x} (Grimit et al., 2006).
 If method "\code{sml}" is specified, the CRPS values are calculated for a "small" number of
 given ensemble forecasts in \code{x} (Ferro et al., 2008). If method "\code{mc}"
 is specified, the CRPS values are calculated by a Monte-Carlo approximation using samples
-of a predictive distribution in \code{x} (Gneiting et al., 2008).
+of a predictive distribution in \code{x} (Gneiting et al., 2008). In the latter case, the number of
+samples should be "high", e.g. 10.000.
 
 A lower CRPS indicates a better forecast.
 }

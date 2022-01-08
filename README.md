@@ -1,5 +1,5 @@
 
-# eppverification: Verification Tools for the Statistical Postprocessing of Ensemble Forecasts <img src='man/figures/sticker.png' align="right" height="150" />
+# eppverification: Verification Tools for the Statistical Postprocessing of Ensemble Forecasts
 
 <!-- badges: start -->
 
@@ -7,8 +7,8 @@
 status](https://www.r-pkg.org/badges/version/eppverification)](https://CRAN.R-project.org/package=eppverification)
 [![R-CMD-check](https://github.com/jobstdavid/eppverification/workflows/R-CMD-check/badge.svg)](https://github.com/jobstdavid/eppverification/actions)
 [![codecov](https://codecov.io/gh/jobstdavid/eppverification/branch/master/graph/badge.svg?token=WJ7XWFO9PT)](https://codecov.io/gh/jobstdavid/eppverification)
-[![version](https://img.shields.io/badge/version-0.2.0-green.svg?style=flat)](https://github.com/jobstdavid/eppverification)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5574572.svg)](https://doi.org/10.5281/zenodo.5574572)
+[![version](https://img.shields.io/badge/version-0.1.0-green.svg?style=flat)](https://github.com/jobstdavid/eppverification)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5574573.svg)](https://doi.org/10.5281/zenodo.5574573)
 <!-- badges: end -->
 
 An R package providing user-friendly **univariate and multivariate
@@ -61,8 +61,8 @@ brackets.
 ### Univariate Verification Tools
 
 -   **Calibration**: Verification Rank Histogram (`vr.hist`),
-    Reliability Index (`ri`), Entropy (`ent`), PIT Histogram
-    (`pit.hist`), Central Prediction Interval Coverage (`cpi`).
+    Reliability Index (`ri`), PIT Histogram (`pit.hist`), Central
+    Prediction Interval Coverage (`cpi`).
 -   **Sharpness**: Root Mean Variance (`rmv`), Variance of PIT-Values
     (`var.pit`), Central Prediction Interval Width (`cpi`).
 -   **Proper Scoring Rules**: Continuous Ranked Probability Score
@@ -73,8 +73,7 @@ brackets.
 ### Multivariate Verification Tools
 
 -   **Calibration**: Multivariate Verification Rank Histogram
-    (`mvr.hist`), Multivariate Reliability Index (`mri`), Multivariate
-    Entropy (`ment`).
+    (`mvr.hist`), Multivariate Reliability Index (`mri`).
 -   **Sharpness**: Determinant Sharpness (`ds`).
 -   **Proper Scoring Rules**: Energy Score (`es`), Euclidean Error
     (`ee`), Variogram Score (`vs`).
@@ -82,8 +81,6 @@ brackets.
 Further functions for **model comparison and visualizations** in this
 package are:
 
--   `dm.test`: This function performs a Diebold-Mariano-Test for two
-    forecasts.
 -   `cpi.plot`: This function plots the central prediction intervals for
     a certain interval range.
 -   `cov.plot`: This function plots the central prediction interval
@@ -116,7 +113,7 @@ y <- rnorm(n)
 x <- matrix(rnorm(n*m), ncol = m)
 
 #Verification Rank Histogram
-vr.hist(y = y, x = x, bins = 3, ri = TRUE, ent = TRUE)
+vr.hist(y = y, x = x, bins = 17, ri = TRUE)
 ```
 
 <img src="man/figures/example2-1.png" width="100%" />
@@ -127,7 +124,7 @@ n <- 10000
 u <- runif(n)
 
 #PIT Histogram
-pit.hist(u = u, bins = 5, var = TRUE, m = TRUE)
+pit.hist(u = u, bins = 5, var = TRUE)
 ```
 
 <img src="man/figures/example3-1.png" width="100%" />
@@ -253,22 +250,6 @@ ee(y = y, x = x, method = "median", mean = FALSE)
 
 ``` r
 #simulated data
-n <- 365
-s1 <- runif(n)
-s2 <- s1 - 0.2
-
-#Diebold-Mariano-Test
-dm.test(s1, s2, alternative = "two.sided", h = 1)
-#> 
-#>  Diebold-Mariano Test
-#> 
-#> data:  s1 s2
-#> DM = 1.3767e+17, truncation lag = 0, p-value < 2.2e-16
-#> alternative hypothesis: two.sided
-```
-
-``` r
-#simulated data
 n <- 30
 x <- seq(Sys.Date(), by = "day", length.out = n)
 y <- rnorm(n, mean = 1:n)
@@ -281,7 +262,7 @@ upper <- qnorm((1-alpha/2), rnorm(n, mean = 1:n))
 cpi.plot(x = x, y = y, lower = lower, upper = upper, interval.range = interval.range, x.lab = "Date", y.lab = "Value", info = TRUE)
 ```
 
-<img src="man/figures/example11-1.png" width="100%" />
+<img src="man/figures/example10-1.png" width="100%" />
 
 ``` r
 #simulated data
@@ -295,7 +276,7 @@ models <- c("A", "B", "C")
 cov.plot(x = x, models = models, interval.range = interval.range)
 ```
 
-<img src="man/figures/example12-1.png" width="100%" />
+<img src="man/figures/example11-1.png" width="100%" />
 
 ``` r
 #simulated data
@@ -312,7 +293,7 @@ colors <- c("red", rep("black", k-3), rep("steelblue", 2))
 line.plot(x = x, y = y, names = names, linetypes = linetypes, colors = colors, x.lab = "Date", y.lab = "Value", legend = "bottom")
 ```
 
-<img src="man/figures/example13-1.png" width="100%" />
+<img src="man/figures/example12-1.png" width="100%" />
 
 ``` r
 #simulated data
@@ -324,7 +305,7 @@ measures <- c("CRPS", "LogS")
 score.plot(x = x, models = models, measures = measures)
 ```
 
-<img src="man/figures/example14-1.png" width="100%" />
+<img src="man/figures/example13-1.png" width="100%" />
 
 ``` r
 #simulated data
@@ -339,7 +320,7 @@ colors <- c("red", "red", "steelblue", "red", "steelblue", "red", "red", "steelb
 map.plot(coordinates = coordinates, names = names, maptype = "terrain-background", size = size, shape = shape, colors = colors)
 ```
 
-<img src="man/figures/example15-1.png" width="100%" />
+<img src="man/figures/example14-1.png" width="100%" />
 
 ``` r
 #simulated data
@@ -351,7 +332,7 @@ names <- c("A", "B")
 box.plot(x = x, names = names, x.lab = "Models", y.lab = "Values")
 ```
 
-<img src="man/figures/example16-1.png" width="100%" />
+<img src="man/figures/example15-1.png" width="100%" />
 
 ## Contact
 

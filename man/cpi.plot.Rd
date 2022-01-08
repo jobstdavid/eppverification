@@ -51,7 +51,7 @@ The \code{interval.range} indicates the size of the central prediction interval,
 \code{alpha := (100 - interval.range)/100}. Consequently \code{lower} must provide the alpha/2-quantiles and \code{upper} the (1-alpha/2)-quantiles of ensemble forecasts/a predictive distribution.
 Internally, \code{interval.range} will be transformed to \code{alpha}.
 
-For ensemble forecasts of size m, it is common to choose \code{interval.range := (m-1)/(m+1)*100}. Consequently \code{lower} must contain
+For ensemble forecasts of size m, it is common to choose \code{interval.range := (m-1)/(m+1)}. Consequently \code{lower} must contain
 in each entry the minimum value of the m forecasts and \code{upper} must contain in each entry the maximum value of the m forecasts.
 
 A lower central prediction interval width score indicates a sharper forecast. The optimal value is 0.

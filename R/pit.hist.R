@@ -7,7 +7,6 @@
 #' @param type character; "\code{relative}", "\code{absolute}" and "\code{density}"; default: "\code{density}" (see details)
 #' @param title character; title of the plot; default: "\code{PIT Histogram}"
 #' @param var logical; if \code{TRUE} the variance of the PIT values is calculated for the plot (see details); if \code{FALSE} the variance of the PIT values is not calculated; default: \code{FALSE}
-#' @param m logical; if \code{TRUE} the expectation of the PIT values is calculated for the plot (see details); if \code{FALSE} the expectation of the PIT values is not calculated; default: \code{FALSE}
 #'
 #' @details
 #' The vector \code{u} contains the PIT values \code{u}=F(\code{x}) for a predictive
@@ -30,10 +29,6 @@
 #' on [0,1], which is desirable. A variance greater than 1/12 indicates underdispersion and a
 #' variance smaller than 1/12 indicates overdispersion of the predictive distribution.
 #'
-#' The expectation value of the PIT values (E(PIT)) provides information on the bias of a predictive distribution.
-#' An expectation of the PIT values equal to 1/2 corresponds to the expectation of the uniform distribution
-#' on [0,1], which is desirable. Any deviation from 1/2 indicates that the predictive distribution is biased.
-#'
 #' @return
 #' ggplot object with a plot of the PIT histogram.
 #'
@@ -44,9 +39,9 @@
 #'
 #' #pit plot
 #' pit.hist(u = u)
-#' pit.hist(u = u, bins = 5, title = "PITH", var = TRUE, m = FALSE)
-#' pit.hist(u = u, bins = 5, type = "relative", var = FALSE, m = TRUE)
-#' pit.hist(u = u, bins = 5, type = "absolute", var = TRUE, m = TRUE)
+#' pit.hist(u = u, bins = 5, title = "PITH", var = TRUE)
+#' pit.hist(u = u, bins = 5, type = "relative", var = TRUE)
+#' pit.hist(u = u, bins = 5, type = "absolute", var = TRUE)
 #'
 #'
 #' @references
@@ -60,7 +55,7 @@
 #'
 #' @importFrom ggplot2 ggplot geom_histogram geom_hline ggtitle aes labs xlab ylab theme element_text stat
 #' @export
-pit.hist <- function(u, bins = NULL, type = "density", title = "PIT Histogram", var = FALSE, m = FALSE) {
+pit.hist <- function(u, bins = NULL, type = "density", title = "PIT Histogram", var = FALSE) {
   if (!is.vector(u)) {
     stop("'u' should be a vector!")
   }
@@ -111,21 +106,6 @@ pit.hist <- function(u, bins = NULL, type = "density", title = "PIT Histogram", 
     var.pit <- round(var(x), 3)
     h <- h + labs(subtitle = paste0("Var(PIT) = ", sep = "", var.pit))
   }
-
-  if (var == TRUE & m == FALSE) {
-    var.pit <- round(var(x), 4)
-    h <- h + labs(subtitle = paste0("Var(PIT) = ", sep = "", var.pit))
-  } else if (var == FALSE & m == TRUE) {
-    m.pit <- round(mean(x), 4)
-    h <- h + labs(subtitle = paste0("E(PIT) = ", sep = "", m.pit))
-  } else if (var == TRUE & m == TRUE) {
-    var.pit <- round(var(x), 4)
-    m.pit <- round(mean(x), 4)
-    h <- h + labs(subtitle = paste0("Var(PIT) =", sep = " ", var.pit, ", E(PIT) = ", m.pit))
-
-  }
-
-
   return(h)
 }
 

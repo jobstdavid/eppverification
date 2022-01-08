@@ -10,8 +10,7 @@ vr.hist(
   bins = NULL,
   type = "relative",
   title = "Verification Rank Histogram",
-  ri = FALSE,
-  ent = FALSE
+  ri = FALSE
 )
 }
 \arguments{
@@ -26,8 +25,6 @@ vr.hist(
 \item{title}{character; title of the plot; default: "\code{Verification Rank Histogram}"}
 
 \item{ri}{logical; if \code{TRUE} the reliability index is calculated for the plot (see details); if \code{FALSE} the reliability index is not calculated; default: \code{FALSE}}
-
-\item{ent}{logical; if \code{TRUE} the entropy is calculated for the plot (see details); if \code{FALSE} the entropy  is not calculated; default: \code{FALSE}}
 }
 \value{
 ggplot object with a plot of the Verification Rank Histogram.
@@ -58,9 +55,6 @@ results in a triangular shaped VRH histogram.
 The deviation from uniformity of the VRH can be quantified by the reliability index (RI).
 The smaller the RI, the better is the calibration of the forecast. The
 optimal value of the RI is 0.
-
-The entropy is a tool to assess the calibration of a forecast. The optimal
-value of the entropy is 1, representing a calibrated forecast.
 }
 \examples{
 #simulated data
@@ -71,9 +65,9 @@ x <- matrix(rnorm(n*m), ncol = m)
 
 #vr.hist plot
 vr.hist(y = y, x = x)
-vr.hist(y = y, x = x, bins = 17, title = "VRH", ri = TRUE, ent = FALSE)
-vr.hist(y = y, x = x, bins = 3, type = "absolute", ri = FALSE, ent = TRUE)
-vr.hist(y = y, x = x, bins = 3, type = "density", ri = TRUE, ent = TRUE)
+vr.hist(y = y, x = x, bins = 17, title = "VRH", ri = TRUE)
+vr.hist(y = y, x = x, bins = 17, type = "absolute", ri = TRUE)
+vr.hist(y = y, x = x, bins = 17, type = "density", ri = TRUE)
 
 }
 \references{
@@ -86,10 +80,6 @@ Delle Monache, L., Hacker, J., Zhou, Y., Deng, X. and Stull, R., (2006). Probabi
 Hamill, T. and Colucci, S. (1997). Verification of Eta-RSM short-range ensemble forecasts. Monthly Weather Review, 125, 1312-1327.
 
 Hamill, T. (2001). Interpretation of rank histograms for verifying ensemble forecasts. Monthly Weather Review, 129, 550-560.
-
-Taillardat, M., Mestre, O., Zamo, M. and Naveau, P., (2016). Calibrated Ensemble Forecasts Using Quantile Regression Forests and Ensemble Model Output Statistics. American Meteorological Society, 144, 2375-2393.
-
-Tribus, M. (1969). Rational Descriptions, Descisions and Designs. Pergamon Press.
 
 Talagrand, O., Vautard, R. and Strauss, B. (1997). Evaluation of probabilistic prediction systems. Workshop on Predictability (ECMWF), 1-25.
 }

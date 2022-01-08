@@ -37,9 +37,9 @@
 #' x[, 1, ] <- rnorm(n*m)
 #' x[, 2, ] <- rgamma(n*m, shape = 1)
 #'
-#' #multivariate entropy calculation
-#' ment(y = y, x = x)
-#' ment(y = y, x = x, bins = 17, method = "bd")
+#' #mri calculation
+#' mri(y = y, x = x)
+#' mri(y = y, x = x, bins = 17, method = "bd")
 #'
 #' @references
 #' Delle Monache, L., Hacker, J., Zhou, Y., Deng, X. and Stull, R., (2006). Probabilistic aspects of meteorological and ozone regional ensemble forecasts. Journal of Geophysical Research: Atmospheres, 111, D24307.

@@ -11,8 +11,7 @@ mvr.hist(
   type = "relative",
   bins = NULL,
   title = NULL,
-  ri = FALSE,
-  ent = FALSE
+  ri = FALSE
 )
 }
 \arguments{
@@ -29,8 +28,6 @@ mvr.hist(
 \item{title}{character; title of the plot; default: "\code{Multivariate Verification Rank Histogram}"}
 
 \item{ri}{logical; if \code{TRUE} the multivariate reliability index is calculated for the plot (see details); if \code{FALSE} the multivariate reliability index is not calculated; default: \code{FALSE}}
-
-\item{ent}{logical; if \code{TRUE} the entropy is calculated for the plot (see details); if \code{FALSE} the entropy  is not calculated; default: \code{FALSE}}
 }
 \value{
 ggplot object with a plot of the Multivariate Verification Rank Histogram.
@@ -71,9 +68,6 @@ the predictive distribution or ensemble forecasts.}
 The deviation from uniformity of the MVRH can be quantified by the multivariate reliability index (RI).
 The smaller the RI, the better is the calibration of the forecast. The
 optimal value of the RI is 0.
-
-The entropy is a tool to assess the calibration of a forecast. The optimal
-value of the entropy is 1, representing a calibrated forecast.
 }
 \examples{
 #simulated data
@@ -86,12 +80,11 @@ x[, 2, ] <- rgamma(n*m, shape = 1)
 
 #mvr.hist plot
 mvr.hist(y = y, x = x)
-mvr.hist(y = y, x = x, bins = 17, method = "bd", title = "MVRH",
-ri = TRUE, ent = FALSE)
-mvr.hist(y = y, x = x, bins = 3, method = "bd", type = "absolute",
-ri = FALSE, ent = TRUE)
-mvr.hist(y = y, x = x, bins = 3, method = "bd", type = "density",
-ri = TRUE, ent = TRUE)
+mvr.hist(y = y, x = x, bins = 17, method = "bd", title = "MVRH", ri = TRUE)
+mvr.hist(y = y, x = x, bins = 17, method = "bd", type = "absolute",
+ri = TRUE)
+mvr.hist(y = y, x = x, bins = 17, method = "bd", type = "density",
+ri = TRUE)
 
 }
 \references{
@@ -101,11 +94,7 @@ Gneiting, T., Stanberry, L., Grimit, E., Held, L. and Johnson, N. (2008). Assess
 
 Smith, L. and Hansen, J. (2004). Extending the limits of ensemble forecast verification with the minimum spanning tree. Monthly Weather Review, 132, 1522-1528.
 
-Taillardat, M., Mestre, O., Zamo, M. and Naveau, P., (2016). Calibrated Ensemble Forecasts Using Quantile Regression Forests and Ensemble Model Output Statistics. American Meteorological Society, 144, 2375-2393.
-
 Thorarinsdottir, T., Scheurer, M. and Heinz, C. (2016). Assessing the calibration of high-dimensional ensemble forecasts using rank histograms. Journal of Computational and Graphical Statistics, 25, 105-122.
-
-Tribus, M. (1969). Rational Descriptions, Descisions and Designs. Pergamon Press.
 
 Wilks, D. (2004). The minimum spanning tree histogram as verification tool for multidimensional ensemble forecasts. Monthly Weather Review, 132, 1329-1340.
 }
