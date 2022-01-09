@@ -12,7 +12,7 @@ Maintainer: David Jobst <jobst@imai.uni-hildesheim.de>
 Description: This package provides user-friendly univariate and multivariate verification tools for the statistical ensemble post-processing. It allows to score and assess the calibration (reliability) and sharpness of ensemble forecasts and predictive distributions. In addition this package can be used to create useful contemporary visualizations for verification.
 URL: https://github.com/jobstdavid/eppverification
 BugReports: https://github.com/jobstdavid/eppverification/issues
-Imports: ggplot2, ggmap, emstreeR, pcaPP
+Imports: ggplot2, ggmap, fields, vegan, pcaPP
 License: GPL (>= 3) + file LICENSE
 Encoding: UTF-8
 LazyData: true

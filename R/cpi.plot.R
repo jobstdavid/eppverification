@@ -109,7 +109,7 @@ cpi.plot <- function(x, y, lower, upper, interval.range, x.lab = "", y.lab = "",
 
   if (info == TRUE) {
     out <- cpi(y, lower, upper, interval.range, separate = c("width", "coverage"), mean = TRUE)
-    p <- p + labs(subtitle = paste0("Coverage = ", sep = "", round(out$coverage, 4)*100, "%, Width = ", round(out$width, 3)))
+    p <- p + labs(subtitle = paste0("Coverage = ", sep = "", round(out$coverage, 4)*100, "%, Width = ", round(out$width, 4)))
   }
   return(p)
 }

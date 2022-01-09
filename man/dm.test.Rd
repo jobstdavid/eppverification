@@ -15,8 +15,7 @@ dm.test(s1, s2, alternative = c("two.sided", "less", "greater"), h = 1)
 hypothesis and must be one of "\code{two.sided}", "\code{greater}" or
 "\code{less}"; default: "\code{two.sided}"}
 
-\item{h}{integer;  the smallest lag not
-used in the autocovariance function; default: 1
+\item{h}{integer; forecast horizon used in calculating s1 and s2; default: 1
 
 The null hypothesis is that the difference \code{s1 - s2} has zero mean.
 The alternative "\code{less}" is that \code{s1 - s2} has negative mean.
@@ -39,9 +38,8 @@ The function \code{dm.test} is inspired by the function \code{dm_test} from the 
 }
 \examples{
 #simulated data
-n <- 365
-s1 <- runif(n)
-s2 <- s1 - 0.2
+s1 <- arima.sim(list(ar = 0.7), sd = 0.5, 100)
+s2 <- arima.sim(list(ar = 0.7), sd = 0.5, 100) - 0.2
 
 #Diebold-Mariano-Test
 dm.test(s1, s2)

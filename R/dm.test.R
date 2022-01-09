@@ -8,8 +8,7 @@
 #' @param alternative character; the alternative
 #' hypothesis and must be one of "\code{two.sided}", "\code{greater}" or
 #' "\code{less}"; default: "\code{two.sided}"
-#' @param h integer;  the smallest lag not
-#' used in the autocovariance function; default: 1
+#' @param h integer; forecast horizon used in calculating s1 and s2; default: 1
 #'
 #' The null hypothesis is that the difference \code{s1 - s2} has zero mean.
 #' The alternative "\code{less}" is that \code{s1 - s2} has negative mean.
@@ -25,9 +24,8 @@
 #'
 #' @examples
 #' #simulated data
-#' n <- 365
-#' s1 <- runif(n)
-#' s2 <- s1 - 0.2
+#' s1 <- arima.sim(list(ar = 0.7), sd = 0.5, 100)
+#' s2 <- arima.sim(list(ar = 0.7), sd = 0.5, 100) - 0.2
 #'
 #' #Diebold-Mariano-Test
 #' dm.test(s1, s2)
@@ -46,13 +44,13 @@
 #' @export
 dm.test <- function(s1, s2, alternative = c("two.sided", "less", "greater"), h = 1) {
   if (length(s1) != length(s2)) {
-    stop("imput vectors must have same length")
+    stop("Imput vectors must have same length!")
   }
   alternative <- match.arg(alternative)
   dname <- paste(deparse(substitute(s1)), deparse(substitute(s2)))
   d <- s1 - s2
   if (any(is.na(d))) {
-    warning("missig values: autocovariance estimate may not be valid")
+    warning("Missig values: autocovariance estimate may not be valid!")
   }
   d <- d[complete.cases(d)]
   n_d <- length(d)
@@ -63,14 +61,17 @@ dm.test <- function(s1, s2, alternative = c("two.sided", "less", "greater"), h =
     S <- NA
     pval <- 0
   } else {
-    S <- mean(d)/sqrt(d_var)
-    if (alternative == "two.sided")
-      pval <- 2 * pnorm(-abs(S)) else if (alternative == "less")
-        pval <- pnorm(S) else if (alternative == "greater")
-          pval <- pnorm(S, lower.tail = FALSE)
+      S <- mean(d)/sqrt(d_var)
+      if (alternative == "two.sided") {
+        pval <- 2 * pnorm(-abs(S))
+      } else if (alternative == "less") {
+        pval <- pnorm(S)
+      } else if (alternative == "greater") {
+        pval <- pnorm(S, lower.tail = FALSE)
+      }
   }
-  para <- h - 1
-  names(para) <- c("truncation lag")
+  para <- h
+  names(para) <- c("Forecast Horizon")
   out <- list(statistic = c(DM = S), parameter = para, p.value = pval,
                alternative = alternative, method = "Diebold-Mariano Test", data.name = dname)
   class(out) <- "htest"

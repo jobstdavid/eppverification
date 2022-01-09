@@ -47,7 +47,8 @@
 #'
 #' @rdname mrnk
 #'
-#' @importFrom emstreeR ComputeMST
+#' @importFrom fields rdist
+#' @importFrom vegan spantree
 #' @export
 mrnk <- function(y, x, method = "mv") {
   #y is a matrix where the columns represent the obs. variables and the rows stand for the time points
@@ -116,7 +117,8 @@ mrnk <- function(y, x, method = "mv") {
 
       l.mst <- NULL
       for(k in 1:(dim(data)[2])) {
-        l.mst <- c(l.mst, sum(ComputeMST(t(data[, -k]), verbose = FALSE)$distance))
+        euc.dist <- rdist(t(data[, -k]))
+        l.mst <- c(l.mst, sum(spantree(euc.dist)$dist))
       }
       x.rank <- rank(l.mst, ties = "random")[1]
 

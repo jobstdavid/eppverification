@@ -254,8 +254,8 @@ ee(y = y, x = x, method = "median", mean = FALSE)
 ``` r
 #simulated data
 n <- 365
-s1 <- runif(n)
-s2 <- s1 - 0.2
+s1 <- arima.sim(list(ar = 0.7), sd = 0.5, 100)
+s2 <- arima.sim(list(ar = 0.7), sd = 0.5, 100) - 0.2
 
 #Diebold-Mariano-Test
 dm.test(s1, s2, alternative = "two.sided", h = 1)
@@ -263,7 +263,7 @@ dm.test(s1, s2, alternative = "two.sided", h = 1)
 #>  Diebold-Mariano Test
 #> 
 #> data:  s1 s2
-#> DM = 1.3767e+17, truncation lag = 0, p-value < 2.2e-16
+#> DM = 2.5055, Forecast Horizon = 1, p-value = 0.01223
 #> alternative hypothesis: two.sided
 ```
 
