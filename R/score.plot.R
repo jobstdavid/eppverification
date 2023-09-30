@@ -32,7 +32,7 @@
 #'
 #' @rdname score.plot
 #'
-#' @importFrom ggplot2 ggplot geom_tile scale_fill_gradient geom_text ggtitle scale_x_discrete scale_y_discrete aes labs xlab ylab theme element_text
+#' @importFrom ggplot2 ggplot geom_tile scale_fill_gradient geom_text ggtitle scale_x_discrete scale_y_discrete aes labs xlab ylab theme element_text theme_bw
 #' @export
 score.plot <- function(x, models, measures, title = "Model Comparison") {
 
@@ -66,6 +66,7 @@ score.plot <- function(x, models, measures, title = "Model Comparison") {
     geom_tile(aes(fill = resc), colour = "white") +
     scale_fill_gradient(low = "white", high = "steelblue") +
     geom_text(aes(label = value), color = "black") +
+    theme_bw() +
     labs(x = "Model", y = "Measure") +
     ggtitle(title) +
     scale_x_discrete(expand = c(0, 0)) +

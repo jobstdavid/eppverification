@@ -62,7 +62,7 @@
 #'
 #' @rdname cpi.plot
 #'
-#' @importFrom ggplot2 ggplot geom_pointrange ggtitle aes labs xlab ylab theme element_text
+#' @importFrom ggplot2 ggplot geom_pointrange ggtitle aes labs xlab ylab theme element_text theme_bw
 #' @export
 cpi.plot <- function(x, y, lower, upper, interval.range, x.lab = "", y.lab = "", title = paste0(interval.range, "% Central Prediction Interval"), info = FALSE) {
   if (!(class(x) %in% c("Date", "numeric", "integer"))) {
@@ -91,7 +91,7 @@ cpi.plot <- function(x, y, lower, upper, interval.range, x.lab = "", y.lab = "",
 
   #prepare data
   data <- cbind(x, y, lower, upper)
-  data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = 4)
+  data <- na.omit(data)
   c.x <- class(x)
   x <- data[, 1]
   class(x) <- c.x
@@ -102,6 +102,7 @@ cpi.plot <- function(x, y, lower, upper, interval.range, x.lab = "", y.lab = "",
   data <- data.frame(x = x, y = y, ymin = ymin, ymax = ymax)
   p <- ggplot(data, aes(x = x, y = y, ymin = ymin, ymax = ymax)) +
     geom_pointrange(color = "darkgrey", fill = "black", shape = 21, size = 1, fatten = 2, stroke = 0) +
+    theme_bw() +
     xlab(x.lab) +
     ylab(y.lab) +
     ggtitle(title) +

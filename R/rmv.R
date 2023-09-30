@@ -3,6 +3,7 @@
 #' This function calculates the Root Mean Variance (RMV) given ensemble forecasts/samples of a predictive distribution.
 #'
 #' @param x vector of variances or matrix of ensemble forecasts/samples of a predictive distribution (see details)
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' If \code{x} is provided as matrix, it should contain the
@@ -10,7 +11,6 @@
 #' the variances are calculated row-wise by its sample version.
 #' If \code{x} is provided as vector, it should contain the variances of the
 #' ensemble forecasts or of a predictive distribution.
-#' Only finite values of \code{x} are used.
 #'
 #' A lower RMV indicates a sharper forecast. The optimal value of the RMV is 0.
 #'
@@ -35,15 +35,28 @@
 #'
 #' @rdname rmv
 #'
+#' @importFrom stats na.omit
+#' @importFrom Rfast rowVars
+#'
 #' @export
-rmv <- function(x) {
+rmv <- function(x, na.rm = FALSE) {
   if (is.matrix(x)) {
+
+    # prepare data
+    if(na.rm) {
+      x <- na.omit(x)
+    }
+
     #use sample variance
-    variance <- apply(x, 1, variance.i)
+    variance <- rowVars(x, parallel = TRUE, na.rm = FALSE)
     rmv.value <- sqrt(mean(variance))
   } else if (is.vector(x)) {
-    #allow only finite values for x
-    x <- x[is.finite(x)]
+
+    # prepare data
+    if(na.rm) {
+      x <- x[is.finite(x)]
+    }
+
     if (any(x < 0)) {
       stop("'x' should contain values >= 0!")
     }
@@ -53,11 +66,4 @@ rmv <- function(x) {
   }
   return(as.numeric(rmv.value))
 }
-#'
-#' internal function
-#' @noRd
-variance.i <- function(z) {
-z <- z[is.finite(z)]
-out <- var(z)
-return(out)
-}
+

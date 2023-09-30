@@ -4,10 +4,12 @@
 \alias{rmv}
 \title{Root Mean Variance}
 \usage{
-rmv(x)
+rmv(x, na.rm = FALSE)
 }
 \arguments{
 \item{x}{vector of variances or matrix of ensemble forecasts/samples of a predictive distribution (see details)}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of score value(s).
@@ -21,7 +23,6 @@ ensemble forecasts or the samples of a predictive distribution in each row. Cons
 the variances are calculated row-wise by its sample version.
 If \code{x} is provided as vector, it should contain the variances of the
 ensemble forecasts or of a predictive distribution.
-Only finite values of \code{x} are used.
 
 A lower RMV indicates a sharper forecast. The optimal value of the RMV is 0.
 }

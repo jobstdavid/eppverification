@@ -9,6 +9,7 @@
 #' @param title character; title of the plot; default: "\code{Verification Rank Histogram}"
 #' @param ri logical; if \code{TRUE} the reliability index is calculated for the plot (see details); if \code{FALSE} the reliability index is not calculated; default: \code{FALSE}
 #' @param ent logical; if \code{TRUE} the entropy is calculated for the plot (see details); if \code{FALSE} the entropy  is not calculated; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{TRUE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{x} should be given as matrix
@@ -74,11 +75,11 @@
 #'
 #' @rdname vr.hist
 #'
-#' @importFrom ggplot2 ggplot geom_histogram geom_hline ggtitle aes labs xlab ylab scale_x_continuous theme element_text stat
+#' @importFrom ggplot2 ggplot geom_histogram geom_hline ggtitle aes labs xlab ylab scale_x_continuous theme element_text after_stat theme_bw
 #' @export
-vr.hist <- function (y, x, bins = NULL, type = "relative", title = "Verification Rank Histogram", ri = FALSE, ent = FALSE) {
+vr.hist <- function (y, x, bins = NULL, type = "relative", title = "Verification Rank Histogram", ri = FALSE, ent = FALSE, na.rm = TRUE) {
 
-  ranks <- rnk(y, x)
+  ranks <- rnk(y, x, na.rm = na.rm)
   k <- ncol(x)
 
   if (!is.null(bins)) {
@@ -104,7 +105,8 @@ vr.hist <- function (y, x, bins = NULL, type = "relative", title = "Verification
   x <- ranks
   if (type == "relative") {
     h <- ggplot(data = data.frame(x = x), aes(x = x)) +
-      geom_histogram(aes(y = stat(cnt) / sum(cnt)), bins = bins, colour = "grey") +
+      geom_histogram(aes(y = after_stat(cnt) / sum(cnt)), bins = bins, colour = "white", fill = "gray") +
+      theme_bw() +
       xlab("Rank") +
       ylab("Relative Frequency") +
       ggtitle(title) +
@@ -115,7 +117,8 @@ vr.hist <- function (y, x, bins = NULL, type = "relative", title = "Verification
   }
   else if (type == "absolute") {
     h <- ggplot(data = data.frame(x = x), aes(x = x)) +
-      geom_histogram(aes(y = stat(cnt)), bins = bins, colour = "grey") +
+      geom_histogram(aes(y = after_stat(cnt)), bins = bins, colour = "white", fill = "gray") +
+      theme_bw() +
       xlab("Rank") +
       ylab("Absolute Frequency") +
       ggtitle(title) +
@@ -125,7 +128,8 @@ vr.hist <- function (y, x, bins = NULL, type = "relative", title = "Verification
   }
   else if (type == "density") {
     h <- ggplot(data = data.frame(x = x), aes(x = x)) +
-      geom_histogram(aes(y = (stat(cnt) / sum(cnt)) * length(cnt)), bins = bins, colour = "grey") +
+      geom_histogram(aes(y = (after_stat(cnt) / sum(cnt)) * length(cnt)), bins = bins, colour = "white", fill = "gray") +
+      theme_bw() +
       xlab("Rank") +
       ylab("Density") +
       ggtitle(title) +

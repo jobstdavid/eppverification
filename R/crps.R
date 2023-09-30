@@ -6,12 +6,12 @@
 #' @param x matrix of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
 #' @param method character; "\code{ens}", "\code{sml}" and "\code{mc}"; default: "\code{ens}" (see details)
 #' @param mean logical; if \code{TRUE} the mean of the CRPS values is calculated for output; if \code{FALSE} the single CRPS values are used as output; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{x} should be given as matrix
 #' with n rows, where the i-th entry of \code{y} belongs to the i-th row
 #' of \code{x}. The columns of \code{x} represent the samples of a predictive distribution or ensemble forecasts.
-#' Only finite values of \code{y} and \code{x} are used.
 #'
 #' If method "\code{ens}" is specified, the CRPS values are calculated for
 #' given ensemble forecasts in \code{x} (Grimit et al., 2006).
@@ -57,8 +57,10 @@
 #'
 #' @rdname crps
 #'
+#' @importFrom stats na.omit
+#'
 #' @export
-crps <- function(y, x, method = "ens", mean = FALSE) {
+crps <- function(y, x, method = "ens", mean = FALSE, na.rm = FALSE) {
   if (!is.vector(y)) {
     stop("'y' should be a vector!")
   }
@@ -69,66 +71,25 @@ crps <- function(y, x, method = "ens", mean = FALSE) {
     stop("Length of 'y' is not equal to the number of rows of 'x'!")
   }
 
-  #prepare data
-  data <- cbind(y, x)
-  index <- which(is.finite(y))
-  data <- matrix(data[index, ], nrow = length(index))
-
   if (method == "ens") {
-    crps.value <- apply(data, 1, crps.i.ens)
+      crps.value <- crps_cpp(y = y, x = x)
   } else if (method == "sml") {
-    crps.value <- apply(data, 1, crps.i.sml)
+    crps.value <- crps_sml_cpp(y = y, x = x)
   } else if (method == "mc") {
-    crps.value <- apply(data, 1, crps.i.mc)
+    crps.value <- crps_mc_cpp(y = y, x = x)
   } else {
-    stop("This method is not available!")
+      stop("This method is not available!")
+  }
+
+  if (na.rm == TRUE) {
+    crps.value <- as.vector(na.omit(crps.value))
   }
 
   if (mean == TRUE) {
     crps.value <- mean(crps.value)
   }
+
   return(as.numeric(crps.value))
-}
-#'
-#' internal function
-#' @noRd
-crps.i.ens <- function(z) {
-  y <- z[1]
-  x <- z[-1]
-  x <- x[is.finite(x)]
-  m <- length(x)
-  i1 <- rep(1:m, times = m)
-  i2 <- rep(1:m, each = m)
 
-  out <- sum(abs(x-y))/m - 1/(2*m^2) * sum(abs(x[i1]-x[i2]))
-  return(out)
-}
-#'
-#' internal function
-#' @noRd
-crps.i.sml <- function(z) {
-  y <- z[1]
-  x <- z[-1]
-  x <- x[is.finite(x)]
-  m <- length(x)
-  i1 <- rep(1:m, times = m)
-  i2 <- rep(1:m, each = m)
-
-  out <- sum(abs(x-y))/m - 1/(2*m*(m-1)) * sum(abs(x[i1]-x[i2]))
-  return(out)
-}
-#'
-#' internal function
-#' @noRd
-crps.i.mc <- function(z) {
-  y <- z[1]
-  x <- z[-1]
-  x <- x[is.finite(x)]
-  m <- length(x)
-  i1 <- 1:(m-1)
-  i2 <- 2:m
-
-  out <- sum(abs(x-y))/m - 1/(2*(m-1)) * sum(abs(x[i1]-x[i2]))
-  return(out)
 }
 

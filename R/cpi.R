@@ -8,12 +8,12 @@
 #' @param interval.range numeric; integer(s) between 0 and 100 (see details)
 #' @param separate character; vector with "\code{is}", "\code{overprediction}", "\code{underprediction}", "\code{width}" or "\code{coverage}"; default: "\code{is}" (see details)
 #' @param mean logical; if \code{TRUE} the mean of the values specified in \code{separate} is calculated for output; if \code{FALSE} the single values specified in \code{separate} are used as output; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{lower}, \code{upper} and \code{interval.range} should be given as vector
 #' of length n, where the i-th entry of \code{y} belongs to the i-th entry of the other vectors. For \code{interval.range}
 #' only one value is also sufficient. This value will be taken for all quantiles as \code{interval.range}.
-#' Only finite values of \code{y}, \code{lower}, \code{upper} and \code{interval.range} are used.
 #'
 #' The \code{interval.range} indicates the size of the central prediction interval, i.e. \code{interval.range} corresponds to
 #' \code{alpha := (100 - interval.range)/100}. Consequently \code{lower} must provide the alpha/2-quantiles and \code{upper} the (1-alpha/2)-quantiles of ensemble forecasts/a predictive distribution.
@@ -65,8 +65,10 @@
 #'
 #' @rdname cpi
 #'
+#' @importFrom stats na.omit
+#'
 #' @export
-cpi <- function(y, lower, upper, interval.range, separate = "is", mean = FALSE) {
+cpi <- function(y, lower, upper, interval.range, separate = "is", mean = FALSE, na.rm = FALSE) {
   if (!is.vector(y)) {
     stop("'y' should be a vector!")
   }
@@ -87,12 +89,14 @@ cpi <- function(y, lower, upper, interval.range, separate = "is", mean = FALSE) 
   }
 
   #prepare data
-  data <- cbind(interval.range, y, lower, upper)
-  data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = 4)
-  interval.range <- data[, 1]
-  y <- data[, 2]
-  lower <- data[, 3]
-  upper <- data[, 4]
+  if (na.rm) {
+    data <- cbind(interval.range, y, lower, upper)
+    data <- na.omit(data)
+    interval.range <- data[, 1]
+    y <- data[, 2]
+    lower <- data[, 3]
+    upper <- data[, 4]
+  }
 
   alpha <- (100 - interval.range)/100
   width <- (upper - lower)

@@ -4,7 +4,7 @@
 \alias{es}
 \title{Energy Score}
 \usage{
-es(y, x, method = "ens", mean = FALSE)
+es(y, x, method = "ens", mean = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{y}{matrix of observations (see details)}
@@ -14,6 +14,8 @@ es(y, x, method = "ens", mean = FALSE)
 \item{method}{character; "\code{ens}" and "\code{mc}"; default: "\code{ens}" (see details)}
 
 \item{mean}{logical; if \code{TRUE} the mean of the ES values is calculated for output; if \code{FALSE} the single ES values are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of the score value(s).

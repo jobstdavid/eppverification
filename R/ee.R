@@ -6,6 +6,7 @@
 #' @param x 3-dimensional array of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
 #' @param method character; "\code{median}" and "\code{mean}"; default: "\code{median}" (see details)
 #' @param mean logical; if \code{TRUE} the mean of the EE values is calculated for output; if \code{FALSE} the single EE values are used as output; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' The observations are given in the matrix \code{y} with n rows, where each column belongs to an univariate observation variable.
@@ -49,8 +50,9 @@
 #' @rdname ee
 #'
 #' @importFrom pcaPP l1median_VaZh
+#' @importFrom Rfast rowsums colmeans
 #' @export
-ee <- function(y, x, method = "median", mean = FALSE) {
+ee <- function(y, x, method = "median", mean = FALSE, na.rm = FALSE) {
   #y is a matrix where the columns represent the obs. variables and the rows stand for the time points
   #x is a 3-dimensional array, where each matrix in that array stands for a time point. In each matrix the columns represent the obs. variables
   #and the rows represent the number of ensemble members/samples
@@ -75,31 +77,26 @@ ee <- function(y, x, method = "median", mean = FALSE) {
     stop("The number of columns of the entries of 'x' is not equal with the number of columns of 'y'!")
   }
 
-  index <- which(apply(is.finite(y), 1, all))
-  ee.value <- c()
+
 
   if (method == "median") {
-    for (i in index) {
-      data <- x[, , i]
-      data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = ncol(data))
-      med <-  l1median_VaZh(data, MaxStep = 10000, ItTol = 1e-8)$par
-      ee.value <- c(ee.value, sqrt(sum((y[i, ] - med)^2)))
-    }
+    med <- t(sapply(1:dim(x)[3], function(i) l1median_VaZh(x[, , i], maxit = 10000)$par))
+    # med <- l1median_cpp(X = x, maxit = 10000, tol = 1e-8, zero_tol = 1e-15)
+    ee.values <- sqrt(rowsums((y-med)^2, parallel = TRUE))
   } else if (method == "mean") {
-    for (i in index) {
-      data <- x[, , i]
-      data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = ncol(data))
-      mu <- colMeans(data)
-      ee.value <- c(ee.value, sqrt(sum((y[i, ] - mu)^2)))
-    }
-
+    mu <- t(sapply(1:dim(x)[3], function(i) colmeans(x[, ,i], parallel = TRUE)))
+    ee.values <- sqrt(rowsums((y-mu)^2, parallel = TRUE))
   } else {
     stop("This method is not available!")
   }
 
-  if (mean == TRUE) {
-    ee.value <- mean(ee.value, na.rm = TRUE)
+  if (na.rm == TRUE) {
+    ee.values <- as.vector(na.omit(ee.values))
   }
 
-  return(ee.value)
+  if (mean == TRUE) {
+    ee.values <- mean(ee.values, na.rm = TRUE)
+  }
+
+  return(ee.values)
 }

@@ -11,7 +11,8 @@ vr.hist(
   type = "relative",
   title = "Verification Rank Histogram",
   ri = FALSE,
-  ent = FALSE
+  ent = FALSE,
+  na.rm = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ vr.hist(
 \item{ri}{logical; if \code{TRUE} the reliability index is calculated for the plot (see details); if \code{FALSE} the reliability index is not calculated; default: \code{FALSE}}
 
 \item{ent}{logical; if \code{TRUE} the entropy is calculated for the plot (see details); if \code{FALSE} the entropy  is not calculated; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{TRUE}}
 }
 \value{
 ggplot object with a plot of the Verification Rank Histogram.

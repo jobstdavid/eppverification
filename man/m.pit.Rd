@@ -18,7 +18,6 @@ This function calculates the Expectation value of the Probability Integral Trans
 \details{
 The vector \code{u} contains the PIT values \code{u}=F(\code{x}) for a predictive
 distribution F and argument \code{x}.
-Only finite values of \code{u} are used.
 The expectation value is calculated by the sample mean of the PIT values.
 
 The expectation value of the PIT values (E(PIT)) provides information on the bias of a predictive distribution.

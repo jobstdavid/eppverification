@@ -6,7 +6,7 @@
 #' @param bins numeric; number of bins; default: \code{bins = round(sqrt(length(u)))} (see details)
 #' @param type character; "\code{relative}", "\code{absolute}" and "\code{density}"; default: "\code{density}" (see details)
 #' @param title character; title of the plot; default: "\code{PIT Histogram}"
-#' @param var logical; if \code{TRUE} the variance of the PIT values is calculated for the plot (see details); if \code{FALSE} the variance of the PIT values is not calculated; default: \code{FALSE}
+#' @param v logical; if \code{TRUE} the variance of the PIT values is calculated for the plot (see details); if \code{FALSE} the variance of the PIT values is not calculated; default: \code{FALSE}
 #' @param m logical; if \code{TRUE} the expectation of the PIT values is calculated for the plot (see details); if \code{FALSE} the expectation of the PIT values is not calculated; default: \code{FALSE}
 #'
 #' @details
@@ -44,9 +44,9 @@
 #'
 #' #pit plot
 #' pit.hist(u = u)
-#' pit.hist(u = u, bins = 5, title = "PITH", var = TRUE, m = FALSE)
-#' pit.hist(u = u, bins = 5, type = "relative", var = FALSE, m = TRUE)
-#' pit.hist(u = u, bins = 5, type = "absolute", var = TRUE, m = TRUE)
+#' pit.hist(u = u, bins = 5, title = "PITH", v = TRUE, m = FALSE)
+#' pit.hist(u = u, bins = 5, type = "relative", v = FALSE, m = TRUE)
+#' pit.hist(u = u, bins = 5, type = "absolute", v = TRUE, m = TRUE)
 #'
 #'
 #' @references
@@ -58,12 +58,13 @@
 #'
 #' @rdname pit.hist
 #'
-#' @importFrom ggplot2 ggplot geom_histogram geom_hline ggtitle aes labs xlab ylab theme element_text stat
+#' @importFrom ggplot2 ggplot geom_histogram geom_hline ggtitle aes labs xlab ylab theme element_text after_stat theme_bw
 #' @export
-pit.hist <- function(u, bins = NULL, type = "density", title = "PIT Histogram", var = FALSE, m = FALSE) {
+pit.hist <- function(u, bins = NULL, type = "density", title = "PIT Histogram", v = FALSE, m = FALSE) {
   if (!is.vector(u)) {
     stop("'u' should be a vector!")
   }
+
   #allow only finite values for u
   u <- u[is.finite(u)]
   if (any(u > 1) || any(u < 0))
@@ -81,25 +82,28 @@ pit.hist <- function(u, bins = NULL, type = "density", title = "PIT Histogram", 
 
   if (type == "relative") {
   h <- ggplot(data = data.frame(x = x), aes(x = x)) +
-    geom_histogram(aes(y = (stat(cnt) / sum(cnt))), breaks = seq(0, 1, length.out = bins + 1), colour = "grey") +
+    geom_histogram(aes(y = (after_stat(cnt) / sum(cnt))), breaks = seq(0, 1, length.out = bins + 1), colour = "white", fill = "gray") +
     geom_hline(yintercept = 1/bins, linetype = "dashed", color = "black") +
-    xlab("PIT") +
+    theme_bw() +
+    xlab("PIT value") +
     ylab("Relative Frequency") +
     ggtitle(title) +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   } else if (type == "absolute") {
     h <- ggplot(data = data.frame(x = x), aes(x = x)) +
-      geom_histogram(aes(y = stat(cnt)), breaks = seq(0, 1, length.out = bins + 1), colour = "grey") +
+      geom_histogram(aes(y = after_stat(cnt)), breaks = seq(0, 1, length.out = bins + 1), colour = "white", fill = "gray") +
       geom_hline(yintercept = length(x)/bins, linetype = "dashed", color = "black") +
-      xlab("PIT") +
+      theme_bw() +
+      xlab("PIT value") +
       ylab("Absolute Frequency") +
       ggtitle(title) +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   } else if (type == "density") {
     h <- ggplot(data = data.frame(x = x), aes(x = x)) +
-      geom_histogram(aes(y = (stat(cnt) / sum(cnt))  * length(cnt)), breaks = seq(0, 1, length.out = bins + 1), colour = "grey") +
+      geom_histogram(aes(y = (after_stat(cnt) / sum(cnt))  * length(cnt)), breaks = seq(0, 1, length.out = bins + 1), colour = "white", fill = "gray") +
       geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
-      xlab("PIT") +
+      theme_bw() +
+      xlab("PIT value") +
       ylab("Density") +
       ggtitle(title) +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
@@ -107,18 +111,18 @@ pit.hist <- function(u, bins = NULL, type = "density", title = "PIT Histogram", 
     stop("This type is not available!")
   }
 
-  if (var == TRUE) {
+  if (v == TRUE) {
     var.pit <- round(var(x), 3)
     h <- h + labs(subtitle = paste0("Var(PIT) = ", sep = "", var.pit))
   }
 
-  if (var == TRUE & m == FALSE) {
+  if (v == TRUE & m == FALSE) {
     var.pit <- round(var(x), 4)
     h <- h + labs(subtitle = paste0("Var(PIT) = ", sep = "", var.pit))
-  } else if (var == FALSE & m == TRUE) {
+  } else if (v == FALSE & m == TRUE) {
     m.pit <- round(mean(x), 4)
     h <- h + labs(subtitle = paste0("E(PIT) = ", sep = "", m.pit))
-  } else if (var == TRUE & m == TRUE) {
+  } else if (v == TRUE & m == TRUE) {
     var.pit <- round(var(x), 4)
     m.pit <- round(mean(x), 4)
     h <- h + labs(subtitle = paste0("Var(PIT) =", sep = " ", var.pit, ", E(PIT) = ", m.pit))

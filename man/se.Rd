@@ -4,7 +4,7 @@
 \alias{se}
 \title{Squared Error}
 \usage{
-se(y, x, mean = FALSE)
+se(y, x, mean = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -12,6 +12,8 @@ se(y, x, mean = FALSE)
 \item{x}{matrix of ensemble forecasts/samples of a predictive distribution or vector of means of ensemble forecasts/a predictive distribution (depending on \code{y}; see details)}
 
 \item{mean}{logical; if \code{TRUE} the mean of the SE values is calculated for output; if \code{FALSE} the single SE values are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of score value(s).
@@ -28,7 +30,6 @@ or ensemble forecasts. The row-wise means are determined by its sample version.
 If the means of ensemble forecasts or of a predictive distribution are directly
 available, \code{x} can be given as vector of means, where
 the i-th entry of \code{y} belongs to the i-th entry of \code{x}.
-Only finite values of \code{y} and \code{x} are used.
 
 In addition, with this function, the Mean Squared Error (MSE) and Root Mean Squares Error (RMSE) can be calculated (see examples).
 

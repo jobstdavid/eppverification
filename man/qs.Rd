@@ -4,7 +4,7 @@
 \alias{qs}
 \title{Quantile Score}
 \usage{
-qs(y, q, p, mean = FALSE)
+qs(y, q, p, mean = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -14,6 +14,8 @@ qs(y, q, p, mean = FALSE)
 \item{p}{vector of probabilities in (0,1)}
 
 \item{mean}{logical; if \code{TRUE} the mean of the QS values is calculated for output; if \code{FALSE} the single QS values are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of score value(s).
@@ -24,7 +26,7 @@ This function calculates the Quantile Score (QS) given observations of a one-dim
 \details{
 For a vector \code{y} of length n, the i-th entry of \code{y} belongs to the i-th entry
 of \code{q} and \code{p}. For given probabilities \code{p} the quantile values are obtained by
-\code{q}=F^{-1}(\code{p}) for a predictive distribution F. Only finite values of \code{y}, \code{q} and \code{p} are used.
+\code{q}=F^{-1}(\code{p}) for a predictive distribution F.
 
 A lower QS indicates a better forecast.
 }

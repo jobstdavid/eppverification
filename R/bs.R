@@ -6,11 +6,12 @@
 #' @param z vector of threshold values (depending on \code{y}; see details)
 #' @param p vector of PIT values in [0,1] (depending on \code{z}; see details)
 #' @param mean logical; if \code{TRUE} the mean of the BS values is calculated for output; if \code{FALSE} the single BS values are used as output; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, the i-th entry of \code{y} belongs to the i-th entry
 #' of \code{z} and \code{p}. For given thresholds \code{z} the PIT values are obtained by
-#' \code{p}=F(\code{z}) for a predictive distribution F. Only finite values of \code{y}, \code{z} and \code{p} are used.
+#' \code{p}=F(\code{z}) for a predictive distribution F.
 #'
 #' A lower BS indicates a better forecast.
 #'
@@ -35,8 +36,10 @@
 #'
 #' @rdname bs
 #'
+#' @importFrom stats na.omit
+#'
 #' @export
-bs <- function(y, z, p, mean = FALSE) {
+bs <- function(y, z, p, mean = FALSE, na.rm = FALSE) {
   if (!is.vector(y)) {
     stop("'y' should be a vector!")
   }
@@ -50,17 +53,14 @@ bs <- function(y, z, p, mean = FALSE) {
     stop("Lengths of 'y', 'z' and 'p' are not equal!")
   }
 
-  #prepare data
-  data <- cbind(y, z, p)
-  data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = 3)
-  y <- data[, 1]
-  z <- data[, 2]
-  p <- data[, 3]
-
   if (any(p > 1) || any(p < 0))
     stop("'p' values have to be in the interval [0,1]!")
 
   bs.value <- (p - 1*(y <= z))^2
+
+  if (na.rm == TRUE) {
+    bs.value <- as.vector(na.omit(bs.value))
+  }
 
   if (mean == TRUE) {
     bs.value <- mean(bs.value)

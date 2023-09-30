@@ -4,13 +4,13 @@
 #'
 #' @param y vector of observations
 #' @param x matrix of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
+#' @param na.rm logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{x} should be given as matrix
 #' with n rows, where the i-th entry of \code{y} belongs to the i-th row
 #' of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
 #' or ensemble forecast.
-#' Only finite values of \code{y} and \code{x} are used.
 #'
 #' @return
 #' Vector of ranks.
@@ -41,7 +41,7 @@
 #' @rdname rnk
 #'
 #' @export
-rnk <- function(y, x) {
+rnk <- function(y, x, na.rm = FALSE) {
   #y entries correspond to each time point
   #x column entries correspond to the ensemble forecasts or samples and the rows correspond to each time point
   if (!is.vector(y)) {
@@ -56,11 +56,12 @@ rnk <- function(y, x) {
 
   #prepare data
   data <- cbind(y, x)
-  index <- which(is.finite(y))
-  data <- matrix(data[index, ], nrow = length(index))
-  data[!is.finite(data)] <- NA
+  if (na.rm) {
+    rank <- apply(data, 1, function(z) rank(z, na.last = NA, ties = "random")[1])
+  } else {
+    rank <- apply(data, 1, function(z) rank(z, na.last = "keep", ties = "random")[1])
+  }
 
-  rank <- apply(data, 1, function(z) rank(z, na.last = NA, ties = "random")[1])
   return(rank)
 }
 

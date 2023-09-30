@@ -7,7 +7,6 @@
 #' @details
 #' The vector \code{u} contains the PIT values \code{u}=F(\code{x}) for a predictive
 #' distribution F and argument \code{x}.
-#' Only finite values of \code{u} are used.
 #'
 #' The variance of the PIT values (Var(PIT)) provides information on the dispersion of a predictive distribution.
 #' A variance of the PIT values equal to 1/12 ≈ 0.0833 corresponds to the variance of the uniform distribution
@@ -38,8 +37,10 @@ var.pit <- function(u) {
   if (!is.vector(u)) {
     stop("'u' should be a vector!")
   }
+
   #allow only finite values for u
   u <- u[is.finite(u)]
+
   if (any(u > 1) || any(u < 0))
     stop("'u' values have to be in the interval [0,1]!")
   var(as.numeric(u))

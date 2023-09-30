@@ -4,7 +4,7 @@
 \alias{ae}
 \title{Absolute Error}
 \usage{
-ae(y, x, mean = FALSE)
+ae(y, x, mean = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -12,6 +12,8 @@ ae(y, x, mean = FALSE)
 \item{x}{matrix of ensemble forecasts/samples of a predictive distribution or vector of medians of ensemble forecasts/a predictive distribution (depending on \code{y}; see details)}
 
 \item{mean}{logical; if \code{TRUE} the mean of the AE values is calculated for output; if \code{FALSE} the single AE values are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of score value(s).
@@ -28,7 +30,6 @@ or ensemble forecasts. The row-wise medians are determined by its sample version
 If the medians of ensemble forecasts or of a predictive distribution are directly
 available, \code{x} can be given as vector of medians, where
 the i-th entry of \code{y} belongs to the i-th entry of \code{x}.
-Only finite values of \code{y} and \code{x} are used.
 
 In addition, with this function, the Mean Absolute Error (MAE) can be calculated.
 

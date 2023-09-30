@@ -6,6 +6,7 @@
 #' @param x matrix of ensemble forecasts/samples of a predictive distribution or vector of variances of ensemble forecasts/a predictive distribution (depending on \code{y}; see details)
 #' @param mu if \code{NULL}, \code{mu} is calculated by the row-wise mean of matrix \code{x}; otherwise \code{mu} must be provided as the means of the ensemble forecasts/predictive distribution; default: \code{NULL} (depending on \code{x}; see details)
 #' @param mean logical; if \code{TRUE} the mean of the DSS values is calculated for output; if \code{FALSE} the single DSS values are used as output; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{x} can be given as matrix of ensemble forecasts/samples of a predictive distribution
@@ -17,7 +18,6 @@
 #' If the variances and means of ensemble forecasts or of a predictive distribution are directly
 #' available, \code{x} can be given as vector of variances and \code{mu} can be given as vector of means, where
 #' the i-th entry of \code{y} belongs to the i-th entry of \code{x} and \code{mu}.
-#' Only finite values of \code{y}, \code{x} and \code{mu} are used.
 #'
 #' A lower DSS indicates a better forecast.
 #'
@@ -47,8 +47,11 @@
 #'
 #' @rdname dss
 #'
+#' @importFrom stats na.omit
+#' @importFrom Rfast rowmeans rowVars
+#'
 #' @export
-dss <- function(y, x, mu = NULL, mean = FALSE) {
+dss <- function(y, x, mu = NULL, mean = FALSE, na.rm = FALSE) {
   if (!is.vector(y)) {
     stop("'y' should be a vector!")
   }
@@ -59,13 +62,10 @@ dss <- function(y, x, mu = NULL, mean = FALSE) {
     if (length(y) != nrow(x)) {
       stop("Length of 'y' is not equal to the number of rows of 'x'!")
     }
-    #allow only finite values for y
-    index <- which(is.finite(y))
-    y <- y[index]
-    x <- matrix(x[index, ], nrow = length(index))
 
-    out <- apply(x, 1, mu.var.i)
-    dss.value <- sapply(1:length(out), function(j) log(out[[j]]$var) + (y[j]-out[[j]]$mu)^2/out[[j]]$var)
+    means <- rowmeans(x)
+    vars <- rowVars(x, parallel = TRUE, na.rm = FALSE)
+    dss.value <- log(vars) + (y-means)^2/vars
   } else {
     if (!is.vector(x)) {
       stop("'x' should be a vector!")
@@ -77,18 +77,16 @@ dss <- function(y, x, mu = NULL, mean = FALSE) {
       stop("Lengths of 'y', 'x' and 'mu' are not equal!")
     }
 
-    #prepare data
-    data <- cbind(y, x, mu)
-    data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = 3)
-    y <- data[, 1]
-    x <- data[, 2]
-    mu <- data[, 3]
-
     if (any(x <= 0)) {
       stop("'x' should contain values > 0!")
     }
 
     dss.value <- log(x) + (y-mu)^2/x
+
+  }
+
+  if (na.rm == TRUE) {
+    dss.value <- as.vector(na.omit(dss.value))
   }
 
   if (mean == TRUE) {
@@ -97,15 +95,6 @@ dss <- function(y, x, mu = NULL, mean = FALSE) {
   return(as.numeric(dss.value))
 
 }
-#'
-#' internal function
-#' @noRd
-mu.var.i <- function(z) {
-  z <- z[is.finite(z)]
-  mu <- mean(z)
-  var <- var(z)
-  out <- list(mu = mu, var = var)
-  return(out)
-}
+
 
 

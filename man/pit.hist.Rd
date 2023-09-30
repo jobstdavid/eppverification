@@ -9,7 +9,7 @@ pit.hist(
   bins = NULL,
   type = "density",
   title = "PIT Histogram",
-  var = FALSE,
+  v = FALSE,
   m = FALSE
 )
 }
@@ -22,7 +22,7 @@ pit.hist(
 
 \item{title}{character; title of the plot; default: "\code{PIT Histogram}"}
 
-\item{var}{logical; if \code{TRUE} the variance of the PIT values is calculated for the plot (see details); if \code{FALSE} the variance of the PIT values is not calculated; default: \code{FALSE}}
+\item{v}{logical; if \code{TRUE} the variance of the PIT values is calculated for the plot (see details); if \code{FALSE} the variance of the PIT values is not calculated; default: \code{FALSE}}
 
 \item{m}{logical; if \code{TRUE} the expectation of the PIT values is calculated for the plot (see details); if \code{FALSE} the expectation of the PIT values is not calculated; default: \code{FALSE}}
 }
@@ -64,9 +64,9 @@ u <- runif(n)
 
 #pit plot
 pit.hist(u = u)
-pit.hist(u = u, bins = 5, title = "PITH", var = TRUE, m = FALSE)
-pit.hist(u = u, bins = 5, type = "relative", var = FALSE, m = TRUE)
-pit.hist(u = u, bins = 5, type = "absolute", var = TRUE, m = TRUE)
+pit.hist(u = u, bins = 5, title = "PITH", v = TRUE, m = FALSE)
+pit.hist(u = u, bins = 5, type = "relative", v = FALSE, m = TRUE)
+pit.hist(u = u, bins = 5, type = "absolute", v = TRUE, m = TRUE)
 
 
 }

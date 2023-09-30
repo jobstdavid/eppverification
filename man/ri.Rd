@@ -4,7 +4,7 @@
 \alias{ri}
 \title{Reliability Index}
 \usage{
-ri(y, x, bins = NULL)
+ri(y, x, bins = NULL, na.rm = FALSE)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -12,6 +12,8 @@ ri(y, x, bins = NULL)
 \item{x}{matrix of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)}
 
 \item{bins}{numeric; if \code{NULL} the number of bins is equal to \code{ncol(x)+1}; otherwise \code{bins} must be chosen so that \code{(ncol(x)+1)/bins} is an integer; default: \code{NULL} (see details)}
+
+\item{na.rm}{logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of the score value.
@@ -24,7 +26,6 @@ For a vector \code{y} of length n, \code{x} should be given as matrix
 with n rows, where the i-th entry of \code{y} belongs to the i-th row
 of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
 or ensemble forecasts.
-Only finite values of \code{y} and \code{x} are used.
 
 The parameter \code{bins} specifies the number of columns for the VRH. For "large"
 \code{ncol(x)} it is often reasonable to reduce the resolution of the VRH by

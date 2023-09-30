@@ -4,7 +4,7 @@
 \alias{ee}
 \title{Euclidean Error}
 \usage{
-ee(y, x, method = "median", mean = FALSE)
+ee(y, x, method = "median", mean = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{y}{matrix of observations (see details)}
@@ -14,6 +14,8 @@ ee(y, x, method = "median", mean = FALSE)
 \item{method}{character; "\code{median}" and "\code{mean}"; default: "\code{median}" (see details)}
 
 \item{mean}{logical; if \code{TRUE} the mean of the EE values is calculated for output; if \code{FALSE} the single EE values are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of the score value(s).

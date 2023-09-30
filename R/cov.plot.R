@@ -43,7 +43,7 @@
 #' @rdname cov.plot
 #'
 #' @importFrom stats setNames
-#' @importFrom ggplot2 ggplot geom_line geom_point geom_abline scale_x_continuous scale_y_continuous ggtitle aes labs xlab ylab theme element_text
+#' @importFrom ggplot2 ggplot geom_line geom_point geom_abline scale_x_continuous scale_y_continuous ggtitle aes labs xlab ylab theme element_text theme_bw
 #' @export
 cov.plot <- function(x, models, interval.range, colors = NULL, title = "Interval Coverage", legend = "right") {
   if (!is.matrix(x)) {
@@ -65,7 +65,7 @@ cov.plot <- function(x, models, interval.range, colors = NULL, title = "Interval
     stop("'interval.range' values should be in the interval (0, 100)!")
 
   data <- cbind(x, interval.range)
-  data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = ncol(data))
+  data <- na.omit(data)
   x <- data[, 1:(ncol(data)-1)]
   interval.range <- data[, ncol(data)]
 
@@ -78,6 +78,7 @@ cov.plot <- function(x, models, interval.range, colors = NULL, title = "Interval
     geom_line(aes(x = range, y = value, group = Legend, color = Legend)) +
     geom_point(aes(x = range, y = value, group = Legend, color = Legend)) +
     geom_abline(intercept = 0, linetype = "dashed") +
+    theme_bw() +
     scale_x_continuous(limits = c(0, 100)) +
     scale_y_continuous(limits = c(0, 100)) +
     xlab("Interval Range [%]") +

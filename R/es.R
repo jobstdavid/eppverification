@@ -6,6 +6,7 @@
 #' @param x 3-dimensional array of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
 #' @param method character; "\code{ens}" and "\code{mc}"; default: "\code{ens}" (see details)
 #' @param mean logical; if \code{TRUE} the mean of the ES values is calculated for output; if \code{FALSE} the single ES values are used as output; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' The observations are given in the matrix \code{y} with n rows, where each column belongs to an univariate observation variable.
@@ -52,7 +53,7 @@
 #' @rdname es
 #'
 #' @export
-es <- function(y, x, method = "ens", mean = FALSE) {
+es <- function(y, x, method = "ens", mean = FALSE, na.rm = FALSE) {
   #y is a matrix where the columns represent the obs. variables and the rows stand for the dates
   #x is a 3-dimensional array, where each matrix in that array stands for a date. In each matrix the columns represent the obs. variables
   #and the rows represent the number of ensemble members/samples
@@ -78,35 +79,23 @@ es <- function(y, x, method = "ens", mean = FALSE) {
   }
 
   if (method == "ens") {
-    index <- which(apply(is.finite(y), 1, all))
-    crps.value <- c()
-    for (i in index) {
-      data <- x[, , i]
-      data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = ncol(data))
-      m <- nrow(data)
-      Exy <- sum(sqrt(rowSums(sweep(data, 2, y[i, ])^2)))
-      Exx.i <- sapply(1:m, function(j) sum(sqrt(rowSums(sweep(data, 2, data[j, ])^2))))
-      Exx <- sum(Exx.i)
-      crps.value <- c(crps.value, as.numeric(Exy/m - 1/(2*m^2) * Exx))
-    }
-
+    es.values <- es_cpp(y = y, x = x)
   } else if (method == "mc") {
-    index <- which(apply(is.finite(y), 1, all))
-    crps.value <- c()
-    for (i in index) {
-      data <- x[, , i]
-      data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = ncol(data))
-      m <- nrow(data)
-      Exy <- sum(sqrt(rowSums(sweep(data, 2, y[i, ])^2)))
-      Exx.i <- sapply(1:(m-1), function(j) sqrt(sum((data[j, ]-data[j+1, ])^2)))
-      Exx <- sum(Exx.i)
-      crps.value <- c(crps.value, as.numeric(Exy/m - 1/(2*(m-1)) * Exx))
-    }
+    es.values <- es_mc_cpp(y = y, x = x)
   } else {
     stop("This method is not available!")
   }
-  if (mean == TRUE) {
-    crps.value <- mean(crps.value)
+
+  if (na.rm == TRUE) {
+    es.values <- as.vector(na.omit(es.values))
   }
-  return(as.numeric(crps.value))
+
+  if (mean == TRUE) {
+    es.values <- mean(es.values)
+  }
+
+  return(as.numeric(es.values))
+
 }
+
+

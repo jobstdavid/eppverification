@@ -5,13 +5,13 @@
 #' @param y vector of observations
 #' @param x matrix of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
 #' @param bins numeric; if \code{NULL} the number of bins is equal to \code{ncol(x)+1}; otherwise \code{bins} must be chosen so that \code{(ncol(x)+1)/bins} is an integer; default: \code{NULL} (see details)
+#' @param na.rm logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{x} should be given as matrix
 #' with n rows, where the i-th entry of \code{y} belongs to the i-th row
 #' of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
 #' or ensemble forecasts.
-#' Only finite values of \code{y} and \code{x} are used.
 #'
 #' The parameter \code{bins} specifies the number of columns for the VRH. For "large"
 #' \code{ncol(x)} it is often reasonable to reduce the resolution of the VRH by
@@ -42,10 +42,12 @@
 #'
 #' @rdname ri
 #'
+#' @importFrom stats na.omit
+#'
 #' @export
-ri <- function(y, x, bins = NULL) {
+ri <- function(y, x, bins = NULL, na.rm = FALSE) {
 
-  ranks <- rnk(y, x)
+  ranks <- rnk(y, x, na.rm = na.rm)
   k <- ncol(x)
 
   if (!is.null(bins)) {

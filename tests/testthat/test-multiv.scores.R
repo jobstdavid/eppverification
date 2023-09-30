@@ -40,8 +40,8 @@ test_that("ds", {
     x[, , i] <- cov(cbind(rnorm(m), rgamma(m, shape = 1)))
   }
 
-  expect_equal(ds(x = x, mean = FALSE), sapply(1:n, function(i) det(x[, , i])^(1/4)))
-  expect_equal(ds(x = x, mean = TRUE), mean(sapply(1:n, function(i) det(x[, , i])^(1/4))))
+  expect_equal(ds(x = x, covmat = TRUE, mean = FALSE), sapply(1:n, function(i) det(x[, , i])^(1/4)))
+  expect_equal(ds(x = x, covmat = TRUE, mean = TRUE), mean(sapply(1:n, function(i) det(x[, , i])^(1/4))))
 
 })
 

@@ -4,12 +4,14 @@
 \alias{logs}
 \title{Logarithmic Score}
 \usage{
-logs(y, mean = FALSE)
+logs(y, mean = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{y}{vector of density values}
 
 \item{mean}{logical; if \code{TRUE} the mean of the LogS values is calculated for output; if \code{FALSE} the single LogS values are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of score value(s).
@@ -22,7 +24,6 @@ For a predictive density function f the density values \code{y} of observations 
 obtained by \code{y} = f(\code{z}). For a "large" number of ensemble forecasts, the density function(s)
 of the ensemble forecasts may be approximated by using, e.g. kernel density
 estimation or by fitting a parametric distribution.
-Only finite values of \code{y} are used.
 
 A lower LogS indicates a better forecast.
 }

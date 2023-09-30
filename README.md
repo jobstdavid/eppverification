@@ -5,9 +5,9 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/eppverification)](https://CRAN.R-project.org/package=eppverification)
-[![R-CMD-check](https://github.com/jobstdavid/eppverification/workflows/R-CMD-check/badge.svg)](https://github.com/jobstdavid/eppverification/actions)
+[![R-CMD-check](https://github.com/jobstdavid/eppverification/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jobstdavid/eppverification/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/jobstdavid/eppverification/branch/master/graph/badge.svg?token=WJ7XWFO9PT)](https://codecov.io/gh/jobstdavid/eppverification)
-[![version](https://img.shields.io/badge/version-0.2.0-green.svg?style=flat)](https://github.com/jobstdavid/eppverification)
+[![version](https://img.shields.io/badge/version-0.3.0-green.svg?style=flat)](https://github.com/jobstdavid/eppverification)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5574572.svg)](https://doi.org/10.5281/zenodo.5574572)
 <!-- badges: end -->
 
@@ -34,24 +34,22 @@ The goal of probabilistic forecasting is to maximize the **sharpness**
 of the probabilistic forecast *F* (CDF) subject to **calibration**.
 Therefore this package contains tools for assessing:
 
--   **calibration (reliability)**. It refers to the statistical
-    consistency between the predictive probabilistic forecast *F* and
-    the associated observation *y*. Consequently it is a joint property
-    of predictions and verifications. The predictive probabilistic
-    forecast *F* is calibrated, if the observation *y* can not be
-    distinguished from a random draw from the predictive probabilistic
-    forecast *F*.
--   **sharpness**. It refers to the dispersion (spread) of the
-    predictive probabilistic forecast *F*. Additionally it is a property
-    of the predictive probabilistic forecast *F*, only. The more
-    concentrated/narrower the predictive probabilistic forecast *F* is,
-    the sharper the forecast is.
--   **calibration and sharpness simultaneously**. Proper scoring rules
-    assess calibration and sharpness properties of the predictive
-    probabilistic forecast *F* simultaneously. They are functions of the
-    predictive probabilistic forecast *F* and the associated observation
-    *y*. A smaller score of a proper scoring rule indicates a “better”
-    forecast.
+- **calibration**. It refers to the statistical consistency between the
+  predictive probabilistic forecast *F* and the associated observation
+  *y*. Consequently it is a joint property of predictions and
+  verifications. The predictive probabilistic forecast *F* is
+  calibrated, if the observation *y* can not be distinguished from a
+  random draw from the predictive probabilistic forecast *F*.
+- **sharpness**. It refers to the spread of the predictive probabilistic
+  forecast *F*. Additionally it is a property of the predictive
+  probabilistic forecast *F*, only. The more concentrated/narrower the
+  predictive probabilistic forecast *F* is, the sharper the forecast is.
+- **calibration and sharpness simultaneously**. Proper scoring rules
+  assess calibration and sharpness properties of the predictive
+  probabilistic forecast *F* simultaneously. They are functions of the
+  predictive probabilistic forecast *F* and the associated observation
+  *y*. A smaller score of a proper scoring rule indicates a “better”
+  forecast.
 
 In the following you find univariate and multivariate verification tools
 for calibration, sharpness and proper scoring rules, where the
@@ -60,39 +58,41 @@ brackets.
 
 ### Univariate Verification Tools
 
--   **Calibration**: Verification Rank Histogram (`vr.hist`),
-    Reliability Index (`ri`), Entropy (`ent`), PIT Histogram
-    (`pit.hist`), Central Prediction Interval Coverage (`cpi`).
--   **Sharpness**: Root Mean Variance (`rmv`), Variance of PIT-Values
-    (`var.pit`), Central Prediction Interval Width (`cpi`).
--   **Proper Scoring Rules**: Continuous Ranked Probability Score
-    (`crps`), Logarithmic Score (`logs`), Interval Score (`is`),
-    Quantile Score (`qs`), Brier Score (`bs`), Dawid-Sebastiani Score
-    (`dss`), Absolute Error (`ae`), Squared Error (`se`).
+- **Calibration**: Verification Rank Histogram (`vr.hist`), Reliability
+  Index (`ri`), Entropy (`ent`), PIT Histogram (`pit.hist`), Central
+  Prediction Interval Coverage (`cpi`).
+- **Sharpness**: Root Mean Variance (`rmv`), Central Prediction Interval
+  Width (`cpi`).
+- **Dispersion**: Variance of PIT-Values (`var.pit`).
+- **Proper Scoring Rules**: Continuous Ranked Probability Score
+  (`crps`), Logarithmic Score (`logs`), Interval Score (`is`), Quantile
+  Score (`qs`), Brier Score (`bs`), Dawid-Sebastiani Score (`dss`),
+  Absolute Error (`ae`), Squared Error (`se`).
 
 ### Multivariate Verification Tools
 
--   **Calibration**: Multivariate Verification Rank Histogram
-    (`mvr.hist`), Multivariate Reliability Index (`mri`), Multivariate
-    Entropy (`ment`).
--   **Sharpness**: Determinant Sharpness (`ds`).
--   **Proper Scoring Rules**: Energy Score (`es`), Euclidean Error
-    (`ee`), Variogram Score (`vs`).
+- **Calibration**: Multivariate Verification Rank Histogram
+  (`mvr.hist`), Multivariate Reliability Index (`mri`), Multivariate
+  Entropy (`ment`).
+- **Sharpness**: Determinant Sharpness (`ds`).
+- **Proper Scoring Rules**: Energy Score (`es`), Euclidean Error (`ee`),
+  Variogram Score (`vs`).
 
 Further functions for **model comparison and visualizations** in this
 package are:
 
--   `dm.test`: This function performs a Diebold-Mariano-Test for two
-    forecasts.
--   `cpi.plot`: This function plots the central prediction intervals for
-    a certain interval range.
--   `cov.plot`: This function plots the central prediction interval
-    coverage for certain interval ranges of different models.
--   `line.plot`: This function creates line plots.
--   `score.plot`: This function plots scores of different models rated
-    by selected measures as heatmap.
--   `map.plot`: This function creates map plots for given coordinates.
--   `box.plot`: This function creates box plots.
+- `dm.test`: This function performs a Diebold-Mariano-Test for two
+  forecasts.
+- `bh.test`: This function performs a Benjamini-Hochberg-Correction for
+  different p-values.
+- `ss`: This function calculates the skill score.
+- `cpi.plot`: This function plots the central prediction intervals for a
+  certain interval range.
+- `cov.plot`: This function plots the central prediction interval
+  coverage for certain interval ranges of different models.
+- `line.plot`: This function creates line plots.
+- `score.plot`: This function plots scores of different models rated by
+  selected measures as heatmap.
 
 ## Examples
 
@@ -101,7 +101,7 @@ package are:
 library(eppverification)
 
 #set.seed for reproducibility 
-set.seed(2021)
+set.seed(2023)
 ```
 
 ### Univariate Verification Tools
@@ -127,7 +127,7 @@ n <- 10000
 u <- runif(n)
 
 #PIT Histogram
-pit.hist(u = u, bins = 5, var = TRUE, m = TRUE)
+pit.hist(u = u, bins = 5, v = TRUE, m = TRUE)
 ```
 
 <img src="man/figures/example3-1.png" width="100%" />
@@ -137,7 +137,7 @@ pit.hist(u = u, bins = 5, var = TRUE, m = TRUE)
 ``` r
 #Root Mean Variance
 rmv(x = x)
-#> [1] 1.024492
+#> [1] 1.000718
 ```
 
 #### Proper Scoring Rules
@@ -145,17 +145,17 @@ rmv(x = x)
 ``` r
 #simulated data
 n <- 30
-m <- 10000
+m <- 50
 y <- rnorm(n)
 x <- matrix(rnorm(n*m), ncol = m)
 
 #Continuous Ranked Probability Score
-crps(y = y, x = x, method = "mc", mean = FALSE)
-#>  [1] 0.4290064 0.2755435 0.2501220 0.6178993 0.3712576 0.2832387 0.7206051
-#>  [8] 0.2422346 1.5479873 0.6552556 0.2346909 1.1957392 0.4732738 0.4448955
-#> [15] 0.3048436 0.6970912 0.3832150 0.7664726 0.7192077 0.2581383 0.5115454
-#> [22] 0.3270349 0.8321649 2.0065355 0.7828538 0.6345589 0.4778476 0.2375604
-#> [29] 0.3476215 0.2369981
+crps(y = y, x = x, method = "ens", mean = FALSE)
+#>  [1] 0.4044568 0.4476677 0.6309580 0.3112616 0.3108355 0.4333361 0.3785663
+#>  [8] 0.2708835 1.5276564 0.2908729 0.2576431 0.5222287 0.5150330 0.2260173
+#> [15] 0.2063663 0.3793887 0.3628304 0.2881931 0.2216882 0.5365261 0.2261479
+#> [22] 0.3454574 0.8881519 0.3738404 0.2607649 2.1705713 0.3876263 0.3470455
+#> [29] 0.6136417 1.2510219
 ```
 
 ``` r
@@ -171,16 +171,16 @@ upper <- qnorm((1-alpha/2), rnorm(n, mean = 1:n))
 cpi(y = y, lower = lower, upper = upper, interval.range = interval.range,
 separate = c("is", "overprediction", "underprediction", "width", "coverage"), mean = TRUE)
 #> $is
-#> [1] 4.731572
+#> [1] 7.615486
 #> 
 #> $overprediction
-#> [1] 0.6513018
+#> [1] 1.813372
 #> 
 #> $underprediction
-#> [1] 0.9931737
+#> [1] 2.248097
 #> 
 #> $width
-#> [1] 3.087097
+#> [1] 3.554018
 #> 
 #> $coverage
 #> [1] 0.7666667
@@ -217,8 +217,8 @@ x[, , i] <- cov(cbind(rnorm(m), rgamma(m, shape = 1)))
 }
 
 #Determinant Sharpness
-ds(x = x, mean = TRUE)
-#> [1] 0.9767044
+ds(x = x, covmat = TRUE, mean = TRUE)
+#> [1] 0.9970074
 ```
 
 #### Proper Scoring Rules
@@ -234,19 +234,19 @@ x[, 2, ] <- rgamma(n*m, shape = 1)
 
 #Energy Score
 es(y = y, x = x, method = "ens", mean = FALSE)
-#>  [1] 1.5085358 0.4271176 0.5437876 0.5381457 0.3655731 0.4727486 0.3593574
-#>  [8] 0.6184233 0.4597113 1.5109192 0.5635740 1.2293665 3.2258953 0.5847054
-#> [15] 1.2106759 0.7710612 0.7012249 1.0368169 1.8140216 0.9094851 0.5705275
-#> [22] 0.4817557 0.3294422 0.7319828 0.5059306 0.6867467 1.6762057 0.8481168
-#> [29] 0.4483804 0.8020821
+#>  [1] 0.3679223 0.6521718 0.5867337 1.3207527 0.5923960 0.8014708 0.6155624
+#>  [8] 0.5966585 0.4954663 0.5689130 1.0170484 0.9257865 0.7126627 1.0177198
+#> [15] 0.4446926 0.5793670 0.8292774 0.3894942 0.7610561 1.0147788 0.6482789
+#> [22] 0.6016987 0.9588860 0.7525639 0.5009687 0.3757042 0.4942515 1.0843650
+#> [29] 0.5392592 0.5930677
 
 #Euclidean Error
 ee(y = y, x = x, method = "median", mean = FALSE)
-#>  [1] 2.0594456 0.5675969 0.7733583 0.7483802 0.2913774 0.6934381 0.3796483
-#>  [8] 0.9239989 0.5867087 2.0868004 0.8168255 1.8245880 4.0522907 0.9217518
-#> [15] 1.8073039 1.1369489 0.9747105 1.4742496 2.4782082 1.3172426 0.8215319
-#> [22] 0.6881254 0.2794533 1.1538583 0.5470560 0.9375704 2.3018176 1.2545919
-#> [29] 0.4307491 1.1370068
+#>  [1] 0.3843640 1.0082464 0.7714796 1.8920704 0.7815929 1.0710445 0.8744638
+#>  [8] 0.7835254 0.5884070 0.8685138 1.4978914 1.3088488 1.0180394 1.4127809
+#> [15] 0.3788144 0.7746369 1.3653489 0.4873720 1.1309196 1.5534546 1.0120617
+#> [22] 0.8120946 1.6097738 1.2245092 0.7507934 0.4449919 0.7341716 1.6176761
+#> [29] 0.5673728 0.9157790
 ```
 
 ### Model Comparison and Visualizations
@@ -256,6 +256,7 @@ ee(y = y, x = x, method = "median", mean = FALSE)
 n <- 365
 s1 <- arima.sim(list(ar = 0.7), sd = 0.5, 100)
 s2 <- arima.sim(list(ar = 0.7), sd = 0.5, 100) - 0.2
+p <- runif(100, min = 0, max = 0.05)
 
 #Diebold-Mariano-Test
 dm.test(s1, s2, alternative = "two.sided", h = 1)
@@ -263,8 +264,18 @@ dm.test(s1, s2, alternative = "two.sided", h = 1)
 #>  Diebold-Mariano Test
 #> 
 #> data:  s1 s2
-#> DM = 2.5055, Forecast Horizon = 1, p-value = 0.01223
+#> DM = 2.3689, Forecast Horizon = 1, p-value = 0.01978
 #> alternative hypothesis: two.sided
+
+#Benjamini-Hochberg-Procedure
+bh.test(p, alpha = 0.05)
+#>   [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+#>  [16] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+#>  [31] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+#>  [46] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+#>  [61] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+#>  [76] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+#>  [91] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
 ```
 
 ``` r
@@ -326,36 +337,9 @@ score.plot(x = x, models = models, measures = measures)
 
 <img src="man/figures/example14-1.png" width="100%" />
 
-``` r
-#simulated data
-coordinates <- c(13.38, 52.53, 16.36, 48.21, 19.04, 47.50, 21.02, 52.24, 2.35, 48.86, -0.13, 51.51, -3.70, 40.42, 12.50, 41.90, -9.14, 38.74)
-coordinates <- matrix(coordinates, ncol = 2, byrow = TRUE)
-names <- c("A", "A", "B", "A", "B", "A", "A", "B", "A")
-size <- rep(5, 9)
-shape <- c(16, 16, 17, 16, 17, 16, 16, 17, 16)
-colors <- c("red", "red", "steelblue", "red", "steelblue", "red", "red", "steelblue", "red")
-
-#Map Plot
-map.plot(coordinates = coordinates, names = names, maptype = "terrain-background", size = size, shape = shape, colors = colors)
-```
-
-<img src="man/figures/example15-1.png" width="100%" />
-
-``` r
-#simulated data
-n <- 30
-x <- cbind(rnorm(n), rgamma(n, shape = 1))
-names <- c("A", "B")
-
-#Box Plot
-box.plot(x = x, names = names, x.lab = "Models", y.lab = "Values")
-```
-
-<img src="man/figures/example16-1.png" width="100%" />
-
 ## Contact
 
-Feel free to contact <jobst@imai.uni-hildesheim.de> if you have any
+Feel free to contact <jobstd@uni-hildesheim.de> if you have any
 questions or suggestions.
 
 ## References

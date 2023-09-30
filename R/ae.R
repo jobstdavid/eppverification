@@ -5,6 +5,7 @@
 #' @param y vector of observations
 #' @param x matrix of ensemble forecasts/samples of a predictive distribution or vector of medians of ensemble forecasts/a predictive distribution (depending on \code{y}; see details)
 #' @param mean logical; if \code{TRUE} the mean of the AE values is calculated for output; if \code{FALSE} the single AE values are used as output; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{x} can be given as matrix of ensemble forecasts/samples of a predictive distribution
@@ -15,7 +16,6 @@
 #' If the medians of ensemble forecasts or of a predictive distribution are directly
 #' available, \code{x} can be given as vector of medians, where
 #' the i-th entry of \code{y} belongs to the i-th entry of \code{x}.
-#' Only finite values of \code{y} and \code{x} are used.
 #'
 #' In addition, with this function, the Mean Absolute Error (MAE) can be calculated.
 #'
@@ -46,9 +46,11 @@
 #'
 #' @rdname ae
 #'
-#' @importFrom stats median
+#' @importFrom stats median na.omit
+#' @importFrom Rfast rowMedians
+#'
 #' @export
-ae <- function(y, x, mean = FALSE) {
+ae <- function(y, x, mean = FALSE, na.rm = FALSE) {
   if (!is.vector(y)) {
     stop("'y' should be a vector!")
   }
@@ -56,25 +58,21 @@ ae <- function(y, x, mean = FALSE) {
     if (length(y) != nrow(x)) {
       stop("Length of 'y' is not equal to the number of rows of 'x'!")
     }
-    index <- which(is.finite(y))
-    y <- y[index]
-    x <- x[index, ]
 
-    med <- apply(x, 1, median.i)
+    med <- rowMedians(x = x, parallel = TRUE, na.rm = FALSE)
     ae.value <- abs(y-med)
   } else if (is.vector(x)) {
     if (length(y) != length(x)) {
       stop("Length of 'y' is not equal to the length of 'x'!")
     }
-    #prepare data
-    data <- cbind(y, x)
-    data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = 2)
-    y <- data[, 1]
-    x <- data[, 2]
 
     ae.value <- abs(y-x)
   } else {
     stop("'x' should be a vector or matrix!")
+  }
+
+  if (na.rm == TRUE) {
+    ae.value <- as.vector(na.omit(ae.value))
   }
 
   if (mean == TRUE) {
@@ -83,13 +81,6 @@ ae <- function(y, x, mean = FALSE) {
   return(as.numeric(ae.value))
 
 }
-#'
-#' internal function
-#' @noRd
-median.i <- function(z) {
-  z <- z[is.finite(z)]
-  out <- median(z)
-  return(out)
-}
+
 
 

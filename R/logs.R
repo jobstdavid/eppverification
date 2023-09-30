@@ -4,13 +4,13 @@
 #'
 #' @param y vector of density values
 #' @param mean logical; if \code{TRUE} the mean of the LogS values is calculated for output; if \code{FALSE} the single LogS values are used as output; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' For a predictive density function f the density values \code{y} of observations \code{z} are
 #' obtained by \code{y} = f(\code{z}). For a "large" number of ensemble forecasts, the density function(s)
 #' of the ensemble forecasts may be approximated by using, e.g. kernel density
 #' estimation or by fitting a parametric distribution.
-#' Only finite values of \code{y} are used.
 #'
 #' A lower LogS indicates a better forecast.
 #'
@@ -35,17 +35,20 @@
 #' @rdname logs
 #'
 #' @export
-logs <- function(y, mean = FALSE) {
+logs <- function(y, mean = FALSE, na.rm = FALSE) {
   if (!is.vector(y)) {
     stop("'y' should be a vector!")
   }
-  #allow only finite values for y
-  y <- y[is.finite(y)]
+
   if (any(y <= 0)) {
     stop("'y' should contain values > 0!")
   }
 
   logs.value <- -log(y)
+
+  if (na.rm == TRUE) {
+    logs.value <- as.vector(na.omit(logs.value))
+  }
 
   if (mean == TRUE) {
     logs.value <- mean(logs.value)

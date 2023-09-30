@@ -4,7 +4,7 @@
 \alias{bs}
 \title{Brier Score}
 \usage{
-bs(y, z, p, mean = FALSE)
+bs(y, z, p, mean = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -14,6 +14,8 @@ bs(y, z, p, mean = FALSE)
 \item{p}{vector of PIT values in [0,1] (depending on \code{z}; see details)}
 
 \item{mean}{logical; if \code{TRUE} the mean of the BS values is calculated for output; if \code{FALSE} the single BS values are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of score value(s).
@@ -24,7 +26,7 @@ This function calculates the Brier Score (BS) given observations of a one-dimens
 \details{
 For a vector \code{y} of length n, the i-th entry of \code{y} belongs to the i-th entry
 of \code{z} and \code{p}. For given thresholds \code{z} the PIT values are obtained by
-\code{p}=F(\code{z}) for a predictive distribution F. Only finite values of \code{y}, \code{z} and \code{p} are used.
+\code{p}=F(\code{z}) for a predictive distribution F.
 
 A lower BS indicates a better forecast.
 }

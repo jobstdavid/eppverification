@@ -4,7 +4,15 @@
 \alias{cpi}
 \title{Central Prediction Interval}
 \usage{
-cpi(y, lower, upper, interval.range, separate = "is", mean = FALSE)
+cpi(
+  y,
+  lower,
+  upper,
+  interval.range,
+  separate = "is",
+  mean = FALSE,
+  na.rm = FALSE
+)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -18,6 +26,8 @@ cpi(y, lower, upper, interval.range, separate = "is", mean = FALSE)
 \item{separate}{character; vector with "\code{is}", "\code{overprediction}", "\code{underprediction}", "\code{width}" or "\code{coverage}"; default: "\code{is}" (see details)}
 
 \item{mean}{logical; if \code{TRUE} the mean of the values specified in \code{separate} is calculated for output; if \code{FALSE} the single values specified in \code{separate} are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector or list of score value(s) specified in \code{separate}.
@@ -29,7 +39,6 @@ This function can calculate the central prediction interval score (IS), overpred
 For a vector \code{y} of length n, \code{lower}, \code{upper} and \code{interval.range} should be given as vector
 of length n, where the i-th entry of \code{y} belongs to the i-th entry of the other vectors. For \code{interval.range}
 only one value is also sufficient. This value will be taken for all quantiles as \code{interval.range}.
-Only finite values of \code{y}, \code{lower}, \code{upper} and \code{interval.range} are used.
 
 The \code{interval.range} indicates the size of the central prediction interval, i.e. \code{interval.range} corresponds to
 \code{alpha := (100 - interval.range)/100}. Consequently \code{lower} must provide the alpha/2-quantiles and \code{upper} the (1-alpha/2)-quantiles of ensemble forecasts/a predictive distribution.

@@ -4,7 +4,7 @@
 \alias{crps}
 \title{Continuous Ranked Probability Score}
 \usage{
-crps(y, x, method = "ens", mean = FALSE)
+crps(y, x, method = "ens", mean = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -14,6 +14,8 @@ crps(y, x, method = "ens", mean = FALSE)
 \item{method}{character; "\code{ens}", "\code{sml}" and "\code{mc}"; default: "\code{ens}" (see details)}
 
 \item{mean}{logical; if \code{TRUE} the mean of the CRPS values is calculated for output; if \code{FALSE} the single CRPS values are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of score value(s).
@@ -25,7 +27,6 @@ This function calculates the Continuous Ranked Probability Score (CRPS) given ob
 For a vector \code{y} of length n, \code{x} should be given as matrix
 with n rows, where the i-th entry of \code{y} belongs to the i-th row
 of \code{x}. The columns of \code{x} represent the samples of a predictive distribution or ensemble forecasts.
-Only finite values of \code{y} and \code{x} are used.
 
 If method "\code{ens}" is specified, the CRPS values are calculated for
 given ensemble forecasts in \code{x} (Grimit et al., 2006).

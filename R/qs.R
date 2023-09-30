@@ -6,11 +6,12 @@
 #' @param q vector of quantile values (depending on \code{p}; see details)
 #' @param p vector of probabilities in (0,1)
 #' @param mean logical; if \code{TRUE} the mean of the QS values is calculated for output; if \code{FALSE} the single QS values are used as output; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, the i-th entry of \code{y} belongs to the i-th entry
 #' of \code{q} and \code{p}. For given probabilities \code{p} the quantile values are obtained by
-#' \code{q}=F^{-1}(\code{p}) for a predictive distribution F. Only finite values of \code{y}, \code{q} and \code{p} are used.
+#' \code{q}=F^{-1}(\code{p}) for a predictive distribution F.
 #'
 #' A lower QS indicates a better forecast.
 #'
@@ -38,7 +39,7 @@
 #' @rdname qs
 #'
 #' @export
-qs <- function(y, q, p, mean = FALSE) {
+qs <- function(y, q, p, mean = FALSE, na.rm = FALSE) {
   if (!is.vector(y)) {
     stop("'y' should be a vector!")
   }
@@ -52,17 +53,14 @@ qs <- function(y, q, p, mean = FALSE) {
     stop("Lengths of 'y', 'q' and 'p' are not equal!")
   }
 
-  #prepare data
-  data <- cbind(y, q, p)
-  data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = 3)
-  y <- data[, 1]
-  q <- data[, 2]
-  p <- data[, 3]
-
   if (any(p >= 1) || any(p <= 0))
     stop("'p' values have to be in the interval (0,1)!")
 
   qs.value <- (q-y) * (1*(y <= q)-p)
+
+  if (na.rm == TRUE) {
+    qs.value <- as.vector(na.omit(qs.value))
+  }
 
   if (mean == TRUE) {
     qs.value <- mean(qs.value)

@@ -4,7 +4,7 @@
 \alias{dss}
 \title{Dawid-Sebastiani Score}
 \usage{
-dss(y, x, mu = NULL, mean = FALSE)
+dss(y, x, mu = NULL, mean = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -14,6 +14,8 @@ dss(y, x, mu = NULL, mean = FALSE)
 \item{mu}{if \code{NULL}, \code{mu} is calculated by the row-wise mean of matrix \code{x}; otherwise \code{mu} must be provided as the means of the ensemble forecasts/predictive distribution; default: \code{NULL} (depending on \code{x}; see details)}
 
 \item{mean}{logical; if \code{TRUE} the mean of the DSS values is calculated for output; if \code{FALSE} the single DSS values are used as output; default: \code{FALSE}}
+
+\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
 }
 \value{
 Vector of score value(s).
@@ -31,7 +33,6 @@ means and variances are determined by its sample versions.
 If the variances and means of ensemble forecasts or of a predictive distribution are directly
 available, \code{x} can be given as vector of variances and \code{mu} can be given as vector of means, where
 the i-th entry of \code{y} belongs to the i-th entry of \code{x} and \code{mu}.
-Only finite values of \code{y}, \code{x} and \code{mu} are used.
 
 A lower DSS indicates a better forecast.
 }

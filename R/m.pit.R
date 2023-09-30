@@ -7,7 +7,6 @@
 #' @details
 #' The vector \code{u} contains the PIT values \code{u}=F(\code{x}) for a predictive
 #' distribution F and argument \code{x}.
-#' Only finite values of \code{u} are used.
 #' The expectation value is calculated by the sample mean of the PIT values.
 #'
 #' The expectation value of the PIT values (E(PIT)) provides information on the bias of a predictive distribution.
@@ -37,8 +36,10 @@ m.pit <- function(u) {
   if (!is.vector(u)) {
     stop("'u' should be a vector!")
   }
+
   #allow only finite values for u
   u <- u[is.finite(u)]
+
   if (any(u > 1) || any(u < 0))
     stop("'u' values have to be in the interval [0,1]!")
   mean(as.numeric(u))

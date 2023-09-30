@@ -66,7 +66,7 @@
 #' @rdname line.plot
 #'
 #' @importFrom stats setNames
-#' @importFrom ggplot2 ggplot geom_line geom_point ggtitle aes labs xlab ylab theme element_text scale_linetype_manual scale_color_manual
+#' @importFrom ggplot2 ggplot geom_line geom_point ggtitle aes labs xlab ylab theme element_text scale_linetype_manual scale_color_manual theme_bw
 #' @export
 line.plot <- function(x, y, names, point = FALSE, linetypes = "solid", colors = "black", x.lab = "", y.lab = "", title = "", legend = "right") {
   if (!(class(x) %in% c("Date", "numeric", "integer"))) {
@@ -91,7 +91,7 @@ line.plot <- function(x, y, names, point = FALSE, linetypes = "solid", colors = 
   }
   #prepare data
   data <- cbind(x, y)
-  data <- matrix(data[apply(is.finite(data), 1, all), ], ncol = ncol(data))
+  data <- na.omit(data)
   c.x <- class(x)
   x <- data[, 1]
   class(x) <- c.x
@@ -121,6 +121,7 @@ line.plot <- function(x, y, names, point = FALSE, linetypes = "solid", colors = 
     geom_line(aes(color = Legend,  linetype = Legend)) +
     scale_linetype_manual(values = linetypes) +
     scale_color_manual(values = colors) +
+    theme_bw() +
     xlab(x.lab) +
     ylab(y.lab) +
     ggtitle(title) +

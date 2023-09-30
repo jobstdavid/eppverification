@@ -15,9 +15,9 @@ knitr::opts_chunk$set(
 # eppverification: Verification Tools for the Statistical Postprocessing of Ensemble Forecasts <img src='man/figures/sticker.png' align="right" height="150" />
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/eppverification)](https://CRAN.R-project.org/package=eppverification)
-[![R-CMD-check](https://github.com/jobstdavid/eppverification/workflows/R-CMD-check/badge.svg)](https://github.com/jobstdavid/eppverification/actions)
+[![R-CMD-check](https://github.com/jobstdavid/eppverification/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jobstdavid/eppverification/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/jobstdavid/eppverification/branch/master/graph/badge.svg?token=WJ7XWFO9PT)](https://codecov.io/gh/jobstdavid/eppverification)
-[![version](https://img.shields.io/badge/version-0.2.0-green.svg?style=flat)](https://github.com/jobstdavid/eppverification)
+[![version](https://img.shields.io/badge/version-0.3.0-green.svg?style=flat)](https://github.com/jobstdavid/eppverification)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5574572.svg)](https://doi.org/10.5281/zenodo.5574572)
 <!-- badges: end -->
 
@@ -37,15 +37,16 @@ remotes::install_github("jobstdavid/eppverification")
 
 The goal of probabilistic forecasting is to maximize the **sharpness** of the probabilistic forecast *F* (CDF) subject to **calibration**. Therefore this package contains tools for assessing: 
 
-* **calibration (reliability)**. It  refers to the statistical consistency between the predictive probabilistic forecast *F* and the associated observation *y*. Consequently it is a joint property of predictions and verifications. The predictive probabilistic forecast *F* is calibrated, if the observation *y* can not be distinguished from a random draw from the predictive probabilistic forecast *F*.
-* **sharpness**. It refers to the dispersion (spread) of the predictive probabilistic forecast *F*. Additionally it is a property of the predictive probabilistic forecast *F*, only. The more concentrated/narrower the predictive probabilistic forecast *F* is, the sharper the forecast is.
+* **calibration**. It  refers to the statistical consistency between the predictive probabilistic forecast *F* and the associated observation *y*. Consequently it is a joint property of predictions and verifications. The predictive probabilistic forecast *F* is calibrated, if the observation *y* can not be distinguished from a random draw from the predictive probabilistic forecast *F*.
+* **sharpness**. It refers to the spread of the predictive probabilistic forecast *F*. Additionally it is a property of the predictive probabilistic forecast *F*, only. The more concentrated/narrower the predictive probabilistic forecast *F* is, the sharper the forecast is.
 * **calibration and sharpness simultaneously**. Proper scoring rules assess calibration and sharpness properties of the predictive probabilistic forecast *F* simultaneously. They are functions of the predictive probabilistic forecast *F* and the associated observation *y*. A smaller score of a proper scoring rule indicates a "better" forecast.
 
 In the following you find univariate and multivariate verification tools for calibration, sharpness and proper scoring rules, where the corresponding function provided within this package is written in brackets. 
 
 ### Univariate Verification Tools
 * **Calibration**: Verification Rank Histogram (`vr.hist`), Reliability Index (`ri`), Entropy (`ent`), PIT Histogram (`pit.hist`), Central Prediction Interval Coverage  (`cpi`). 
-* **Sharpness**: Root Mean Variance  (`rmv`), Variance of PIT-Values  (`var.pit`), Central Prediction Interval Width  (`cpi`).
+* **Sharpness**: Root Mean Variance  (`rmv`), Central Prediction Interval Width  (`cpi`).
+* **Dispersion**: Variance of PIT-Values  (`var.pit`).
 * **Proper Scoring Rules**: Continuous Ranked Probability Score (`crps`), Logarithmic Score (`logs`), Interval Score (`is`), Quantile Score (`qs`),  Brier Score (`bs`), Dawid-Sebastiani Score (`dss`), Absolute Error (`ae`), Squared Error (`se`).
 
 ### Multivariate Verification Tools
@@ -56,12 +57,12 @@ In the following you find univariate and multivariate verification tools for cal
 Further functions for **model comparison and visualizations** in this package are: 
 
 * `dm.test`: This function performs a Diebold-Mariano-Test for two forecasts.
+* `bh.test`: This function performs a Benjamini-Hochberg-Correction for different p-values.
+* `ss`: This function calculates the skill score. 
 * `cpi.plot`: This function plots the central prediction intervals for a certain interval range.
 * `cov.plot`: This function plots the central prediction interval coverage for certain interval ranges of different models. 
 * `line.plot`: This function creates line plots.
 * `score.plot`: This function plots scores of different models rated by selected measures as heatmap.
-* `map.plot`: This function creates map plots for given coordinates.
-* `box.plot`: This function creates box plots.
 
 ## Examples
 
@@ -70,7 +71,7 @@ Further functions for **model comparison and visualizations** in this package ar
 library(eppverification)
 
 #set.seed for reproducibility 
-set.seed(2021)
+set.seed(2023)
 ```
 
 ### Univariate Verification Tools
@@ -93,7 +94,7 @@ n <- 10000
 u <- runif(n)
 
 #PIT Histogram
-pit.hist(u = u, bins = 5, var = TRUE, m = TRUE)
+pit.hist(u = u, bins = 5, v = TRUE, m = TRUE)
 
 ```
 
@@ -107,12 +108,12 @@ rmv(x = x)
 ```{r example5}
 #simulated data
 n <- 30
-m <- 10000
+m <- 50
 y <- rnorm(n)
 x <- matrix(rnorm(n*m), ncol = m)
 
 #Continuous Ranked Probability Score
-crps(y = y, x = x, method = "mc", mean = FALSE)
+crps(y = y, x = x, method = "ens", mean = FALSE)
 ```
 
 ```{r example6}
@@ -157,7 +158,7 @@ x[, , i] <- cov(cbind(rnorm(m), rgamma(m, shape = 1)))
 }
 
 #Determinant Sharpness
-ds(x = x, mean = TRUE)
+ds(x = x, covmat = TRUE, mean = TRUE)
 ```
 
 
@@ -185,9 +186,13 @@ ee(y = y, x = x, method = "median", mean = FALSE)
 n <- 365
 s1 <- arima.sim(list(ar = 0.7), sd = 0.5, 100)
 s2 <- arima.sim(list(ar = 0.7), sd = 0.5, 100) - 0.2
+p <- runif(100, min = 0, max = 0.05)
 
 #Diebold-Mariano-Test
 dm.test(s1, s2, alternative = "two.sided", h = 1)
+
+#Benjamini-Hochberg-Procedure
+bh.test(p, alpha = 0.05)
 ```
 
 ```{r example11}
@@ -241,32 +246,9 @@ measures <- c("CRPS", "LogS")
 score.plot(x = x, models = models, measures = measures)
 ```
 
-```{r example15}
-#simulated data
-coordinates <- c(13.38, 52.53, 16.36, 48.21, 19.04, 47.50, 21.02, 52.24, 2.35, 48.86, -0.13, 51.51, -3.70, 40.42, 12.50, 41.90, -9.14, 38.74)
-coordinates <- matrix(coordinates, ncol = 2, byrow = TRUE)
-names <- c("A", "A", "B", "A", "B", "A", "A", "B", "A")
-size <- rep(5, 9)
-shape <- c(16, 16, 17, 16, 17, 16, 16, 17, 16)
-colors <- c("red", "red", "steelblue", "red", "steelblue", "red", "red", "steelblue", "red")
-
-#Map Plot
-map.plot(coordinates = coordinates, names = names, maptype = "terrain-background", size = size, shape = shape, colors = colors)
-```
-
-```{r example16}
-#simulated data
-n <- 30
-x <- cbind(rnorm(n), rgamma(n, shape = 1))
-names <- c("A", "B")
-
-#Box Plot
-box.plot(x = x, names = names, x.lab = "Models", y.lab = "Values")
-```
-
 ## Contact
 
-Feel free to contact jobst@imai.uni-hildesheim.de if you have any questions or suggestions.
+Feel free to contact [jobstd@uni-hildesheim.de](mailto:jobstd@uni-hildesheim.de) if you have any questions or suggestions.
 
 ## References
 
