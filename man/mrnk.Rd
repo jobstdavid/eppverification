@@ -4,33 +4,34 @@
 \alias{mrnk}
 \title{Multivariate Ranks}
 \usage{
-mrnk(y, x, method = "mv")
+mrnk(y, x, method = "mv", na.rm = FALSE)
 }
 \arguments{
 \item{y}{matrix of observations (see details)}
 
-\item{x}{3-dimensional array of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)}
+\item{x}{3-dimensional array of samples of a predictive distribution (depending on \code{y}; see details)}
 
 \item{method}{character; "\code{mv}", "\code{avg}", "\code{mst}", "\code{bd}"; default: "\code{mv}" (see details)}
+
+\item{na.rm}{logical; if \code{TRUE} NA are stripped before the rank computation proceeds; if \code{FALSE} NA are used in the rank computation; default: \code{FALSE}}
 }
 \value{
 Vector of ranks.
 }
 \description{
-This function calculates the ranks given observations of a multivariate variable and ensemble forecasts/samples of a predictive distribution.
+This function calculates the ranks given observations of a multivariate variable and samples of a predictive distribution.
 }
 \details{
 The observations are given in the matrix \code{y} with n rows, where each column belongs to an univariate observation variable.
 The i-th row of matrix \code{y} belongs to the i-th third dimension entry of the array \code{x}. The i-th third dimension
-entry must be a matrix with n rows, having the same structure as \code{y}, filled with the ensemble forecasts or samples of a predictive distribution.
-Only finite values of \code{y} and \code{x} are used.
+entry must be a matrix with n rows, having the same structure as \code{y}, filled with the samples of a multivariate predictive distribution.
 
 For the calculation of the ranks, different methods are available, where "\code{mv}" stands for "multivariate ranks",
 "\code{avg}" stands for "average ranks", "\code{mst}" stands for "minimum-spanning-tree ranks" and
 "\code{bd}" stands for "band-depth ranks". These methods are implemented as described in e.g. Thorarinsdottir et al. (2016).
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 m <- 50
 y <- cbind(rnorm(n), rgamma(n, shape = 1))
@@ -38,7 +39,7 @@ x <- array(NA, dim = c(m, 2, n))
 x[, 1, ] <- rnorm(n*m)
 x[, 2, ] <- rgamma(n*m, shape = 1)
 
-#mrnk calculation
+# mrnk calculation
 mrnk(y = y, x = x, method = "mv")
 mrnk(y = y, x = x, method = "avg")
 mrnk(y = y, x = x, method = "mst")

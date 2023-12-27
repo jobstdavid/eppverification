@@ -2,9 +2,12 @@
 #'
 #' This function calculates the Skill Score (SS) of the mean score time series.
 #'
-#' @param s1 vector of scores from method 1
-#' @param s2 vector of scores from method 2
-#' @param na.rm logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
+#' @param s1 vector of mean scores from method 1
+#' @param s2 vector of mean scores from method 2
+#' @param na.action function to handle the NA's. Default: \code{na.omit}.
+#' @param aggregate logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+#' Default: \code{FALSE}, i.e. no aggregation function.
+#' @param ... further arguments passed to the \code{aggregate} function.
 #'
 #' @details
 #' The Skill Score (SS) uses the mean scores \code{s1} of the forecasting method of interest (method 1) and \code{s2} of the benchmark method (method 2).
@@ -21,11 +24,12 @@
 #' Skill score.
 #'
 #' @examples
-#' #simulated data
+#' # simulated data
 #' s1 <- rnorm(100)
 #' s2 <- rnorm(100)
 #'
 #' ss(s1 = s1, s2 = s2)
+#' ss(s1 = s1, s2 = s2, aggregate = mean)
 #'
 #' @references
 #' Gneiting, T. and Raftery, A. (2007). Strictly proper scoring rules, prediction, and estimation. Journal of the American Statistical Association, 102, 359-378.
@@ -35,19 +39,22 @@
 #' @rdname ss
 #'
 #' @export
-ss <- function(s1, s2, na.rm = FALSE) {
+ss <- function(s1, s2, na.action = na.omit, aggregate = FALSE, ...) {
 
   if (length(s1) != length(s2)) {
     stop("Imput vectors must have same length!")
   }
 
-  if (na.rm) {
-    s <- na.omit(cbind(s1, s2))
-    s1 <- s[, 1]
-    s2 <- s[, 2]
-  }
+
+  s <- na.action(cbind(s1, s2))
+  s1 <- s[, 1]
+  s2 <- s[, 2]
 
   ss.value <- 1 - s1/s2
+
+  if (!isFALSE(aggregate)) {
+    ss.value <- do.call(aggregate, list(ss.value, ...))
+  }
 
   return(as.numeric(ss.value))
 

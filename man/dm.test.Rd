@@ -9,7 +9,7 @@ dm.test(
   s2,
   alternative = c("two.sided", "less", "greater"),
   h = 1,
-  na.rm = FALSE
+  na.action = na.omit
 )
 }
 \arguments{
@@ -23,7 +23,7 @@ hypothesis and must be one of "\code{two.sided}", "\code{greater}" or
 
 \item{h}{integer; forecast horizon used in calculating s1 and s2; default: 1}
 
-\item{na.rm}{logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.
 
 The null hypothesis is that the difference \code{s1 - s2} has zero mean.
 The alternative "\code{less}" is that \code{s1 - s2} has negative mean.
@@ -31,25 +31,25 @@ The alternative "\code{greater}" is that \code{s1 - s2} has positive mean.
 The alternative "\code{two.sided}" is that \code{s1 - s2} has mean unequal
 zero.
 
-The difference \code{s1 - s2} may contain missing values,
+The difference \code{s1 - s2}  may contain missing values,
 in which case complete cases are used and a warning is given.}
 }
 \value{
-An object of class "\code{htest}".
+An object of class \code{htest}.
 }
 \description{
 This function performs the Diebold-Mariano-Test for equal predictive performance of two forecasts with respect to a scoring rule.
-This test is a simplified version of \code{\link[forecast]{dm.test}}.
+This test computes p-values from the normal distribution instead of the student-t distribution, as in \code{\link[forecast]{dm.test}}.
 }
 \note{
-The function \code{dm.test} is inspired by the function \code{dm.test} from the R-package \code{forecast} by Hyndman et al.
+The function \code{dm.test} is inspired by the function \code{dm_test} from the R-package \code{ensAR} by J. Gross and A. Moeller.
 }
 \examples{
-#simulated data
+# simulated data
 s1 <- arima.sim(list(ar = 0.7), sd = 0.5, 100)
 s2 <- arima.sim(list(ar = 0.7), sd = 0.5, 100) - 0.2
 
-#Diebold-Mariano-Test
+# Diebold-Mariano-Test
 dm.test(s1, s2)
 
 

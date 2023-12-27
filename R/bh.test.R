@@ -5,20 +5,20 @@
 #'
 #' @param p vector of p-values on which the Benjamini-Hochberg-Procedure should be applied
 #' @param alpha numeric; false discovery rate at level alpha; alpha is number between 0 and 1
-#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
+#' @param na.action function to handle the NA's. Default: \code{na.omit}.
 #'
 #' @return
-#' A logical vector where the value TRUE indicates that the p-value at the
+#' A logical vector where the value \code{TRUE} indicates that the p-value at the
 #' corresponding  position is significant after the Benjamini-Hochberg-Procedure
-#' with false discovery rate alpha. If the value is FALSE the p-value at the
+#' with false discovery rate \code{alpha}. If the value is \code{FALSE} the p-value at the
 #' corresponding  position is not significant after the
-#' Benjamini-Hochberg-Procedure with false discovery rate alpha.
+#' Benjamini-Hochberg-Procedure with false discovery rate \code{alpha}.
 #'
 #' @examples
-#' #simulated data
-#' p <- runif(100)
+#' # simulated data
+#' p <- runif(100, 0, 0.06)
 #'
-#' #Benjamini-Hochberg-Procedure
+#' # Benjamini-Hochberg-Procedure
 #' bh.test(p = p)
 #' bh.test(p = p, alpha = 0.1)
 #'
@@ -29,8 +29,9 @@
 #' @author David Jobst
 #' @rdname bh.test
 #'
+#' @importFrom utils tail
 #' @export
-bh.test <- function(p, alpha = 0.05, na.rm = FALSE){
+bh.test <- function(p, alpha = 0.05, na.action = na.omit) {
 
   if (!is.vector(p)) {
     stop("'p' should be a vector!")
@@ -42,20 +43,22 @@ bh.test <- function(p, alpha = 0.05, na.rm = FALSE){
     stop("'alpha' has to be in the interval (0,1)!")
   }
 
-  if(na.rm) {
-    p <- p[is.finite(p)]
+  # handle NA
+  p <- as.vector(na.action(p))
+
+  n  <- length(p)
+  r <- rank(x = p, ties.method = "random")
+  p_adj <- alpha * r/n
+  bh <- p <= p_adj
+  df <- data.frame(r = r, p = p, p_adj = p_adj, bh = bh)
+  df <- df[order(df$r), ]
+  crit <- tail(which(df$bh), 1)
+  if (length(crit) != 0) {
+    p_crit <- df$p[crit]
+    out <- p <= p_crit
+  } else {
+    out <- rep(FALSE, n)
   }
-
-  n <- length(p)
-
-  #Ranks of p-values
-  p_rank <- rank(x = p, na.last = NA, ties.method = "random")
-
-  #Limits for sorted p-values
-  limits <- alpha*(1:n)/n
-
-  #p-values smaller than their limit TRUE, otherwise FALSE
-  out <- (p <= limits[p_rank])
 
   return(out)
 

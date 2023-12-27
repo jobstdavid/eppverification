@@ -1,23 +1,25 @@
 #' Absolute Error
 #'
-#' This function calculates the Absolute Error (AE) given observations of a one-dimensional variable and ensemble forecasts/samples of a predictive distribution.
+#' This function calculates the Absolute Error (AE) given observations of a univariate variable and samples of a predictive distribution.
 #'
 #' @param y vector of observations
-#' @param x matrix of ensemble forecasts/samples of a predictive distribution or vector of medians of ensemble forecasts/a predictive distribution (depending on \code{y}; see details)
-#' @param mean logical; if \code{TRUE} the mean of the AE values is calculated for output; if \code{FALSE} the single AE values are used as output; default: \code{FALSE}
-#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
+#' @param x matrix of samples of a predictive distribution or vector containing the medians of a predictive distribution (depending on \code{y}; see details)
+#' @param na.action function to handle the NA's. Default: \code{na.omit}.
+#' @param aggregate logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+#' Default: \code{FALSE}, i.e. no aggregation function.
+#' @param ... further arguments passed to the \code{aggregate} function.
 #'
 #' @details
-#' For a vector \code{y} of length n, \code{x} can be given as matrix of ensemble forecasts/samples of a predictive distribution
+#' For a vector \code{y} of length n, \code{x} can be given as matrix of samples of a predictive distribution
 #' with n rows, where the i-th entry of \code{y} belongs to the i-th row
-#' of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
-#' or ensemble forecasts. The row-wise medians are determined by its sample version.
+#' of \code{x}. The columns of \code{x} represent the samples of a predictive distribution.
+#' The row-wise medians are determined by its sample version.
 #'
-#' If the medians of ensemble forecasts or of a predictive distribution are directly
-#' available, \code{x} can be given as vector of medians, where
+#' If the medians of a predictive distribution are directly
+#' available, \code{x} can be given as vector containing the medians, where
 #' the i-th entry of \code{y} belongs to the i-th entry of \code{x}.
 #'
-#' In addition, with this function, the Mean Absolute Error (MAE) can be calculated.
+#' In addition, with this function, the Mean Absolute Error (MAE) can be calculated by specifying \code{aggregate = mean}.
 #'
 #' A lower AE indicates a better forecast.
 #'
@@ -25,22 +27,22 @@
 #' Vector of score value(s).
 #'
 #' @examples
-#' #simulated data
+#' # simulated data
 #' n <- 30
 #' m <- 50
 #' y <- rnorm(n)
 #' x1 <- matrix(rnorm(n*m), ncol = m)
 #' x2 <- apply(x1, 1, median)
 #'
-#' #ae calculation
-#' ae(y = y, x = x1, mean = FALSE)
-#' ae(y = y, x = x1, mean = TRUE)
+#' # ae calculation
+#' ae(y = y, x = x1)
+#' ae(y = y, x = x1, aggregate = mean)
 #'
-#' ae(y = y, x = x2, mean = FALSE)
-#' (mae <- ae(y = y, x = x2, mean = TRUE))
+#' ae(y = y, x = x2)
+#' (mae <- ae(y = y, x = x2, aggregate = mean))
 #'
 #' @references
-#' Vannitsem, S., Wilks, D. and Messner, J. (2018). Statistical Postprocessing of Ensemble Forecasts. Elsevier. 164.
+#' Gneiting, T. (2011). Making and Evaluating Point Forecasts. Journal of the American Statistical Association, 106(494), 746-762.
 #'
 #' @author David Jobst
 #'
@@ -50,7 +52,7 @@
 #' @importFrom Rfast rowMedians
 #'
 #' @export
-ae <- function(y, x, mean = FALSE, na.rm = FALSE) {
+ae <- function(y, x, na.action = na.omit, aggregate = FALSE, ...) {
   if (!is.vector(y)) {
     stop("'y' should be a vector!")
   }
@@ -71,13 +73,11 @@ ae <- function(y, x, mean = FALSE, na.rm = FALSE) {
     stop("'x' should be a vector or matrix!")
   }
 
-  if (na.rm == TRUE) {
-    ae.value <- as.vector(na.omit(ae.value))
+  ae.value <- as.vector(na.action(ae.value))
+  if (!isFALSE(aggregate)) {
+    ae.value <- do.call(aggregate, list(ae.value, ...))
   }
 
-  if (mean == TRUE) {
-    ae.value <- mean(ae.value)
-  }
   return(as.numeric(ae.value))
 
 }

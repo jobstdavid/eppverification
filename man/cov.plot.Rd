@@ -7,7 +7,7 @@
 cov.plot(
   x,
   models,
-  interval.range,
+  nominal.coverage,
   colors = NULL,
   title = "Interval Coverage",
   legend = "right"
@@ -18,7 +18,7 @@ cov.plot(
 
 \item{models}{character; column names of \code{x} (depending on \code{x}; see details)}
 
-\item{interval.range}{numeric; integer(s) between 0 and 100 (see details)}
+\item{nominal.coverage}{numeric; nominal coverages in \% (see details)}
 
 \item{colors}{character; color for each object in \code{models}; default: ggplot2 setting (depending on \code{x}; see details)}
 
@@ -34,28 +34,27 @@ This function plots the central prediction interval coverage for different inter
 }
 \details{
 For matrix \code{x}, each column contains the central prediction interval coverages of a different model in \%. Consequently
-the i-th row entries of \code{x} correspond to the i-th entry in \code{interval.range}. In addition each entry in \code{models} and \code{colors} refers to
-the respective column of \code{x}.
-Only finite values of \code{x} and \code{interval.range} are used.
+the i-th row entries of \code{x} correspond to the i-th entry in \code{nominal.coverage}. In addition each entry in \code{models} and \code{colors} refers to
+the respective column of \code{x}. NA's are omitted.
 
 For the parameter \code{legend} the following options are available: "\code{right}", "\code{left}", "\code{bottom}", "\code{top}", "\code{hide}".
 
 The closer the points/a line plot to the dashed line is, the more calibrated the model is.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 x <- matrix(runif(n)*100, ncol = 3)
 x <- apply(x, 2, sort)
 models <- c("A", "B", "C")
-interval.range <- seq(5, 95, length.out = 10)
+nominal.coverage <- seq(5, 95, length.out = 10)
 colors <- c("darkred", "steelblue", "orange")
 title <- "Interval Coverage Comparison"
-legend <- "left"
+legend <- "bottom"
 
-#cov.plot plot
-cov.plot(x = x, models = models, interval.range = interval.range)
-cov.plot(x = x, models = models, interval.range = interval.range,
+# cov.plot plot
+cov.plot(x = x, models = models, nominal.coverage = nominal.coverage)
+cov.plot(x = x, models = models, nominal.coverage = nominal.coverage,
 colors = colors, title = title, legend = legend)
 
 }

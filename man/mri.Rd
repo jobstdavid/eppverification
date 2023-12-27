@@ -4,27 +4,29 @@
 \alias{mri}
 \title{Multivariate Reliability Index}
 \usage{
-mri(y, x, method = "mv", bins = NULL)
+mri(y, x, method = "mv", bins = NULL, na.rm = FALSE)
 }
 \arguments{
 \item{y}{matrix of observations (see details)}
 
-\item{x}{3-dimensional array of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)}
+\item{x}{3-dimensional array of samples of a predictive distribution (depending on \code{y}; see details)}
 
 \item{method}{character; "\code{mv}", "\code{avg}", "\code{mst}", "\code{bd}"; default: "\code{mv}" (see details)}
 
 \item{bins}{numeric; if \code{NULL} the number of bins is equal to \code{nrow(x[, , 1])+1}; otherwise \code{bins} must be chosen so that \code{(nrow(x[, , 1])+1)/bins} is an integer; default: \code{NULL} (see details)}
+
+\item{na.rm}{logical; if \code{TRUE} NA are stripped before the rank computation proceeds; if \code{FALSE} NA are used in the rank computation; default: \code{FALSE}}
 }
 \value{
 Vector of the score value.
 }
 \description{
-This function calculates the Multivariate Reliability Index (RI) given observations of a multivariate variable and ensemble forecasts/samples of a predictive distribution.
+This function calculates the Multivariate Reliability Index (RI) given observations of a multivariate variable and samples of a predictive distribution.
 }
 \details{
 The observations are given in the matrix \code{y} with n rows, where each column belongs to an univariate observation variable.
 The i-th row of matrix \code{y} belongs to the i-th third dimension entry of the array \code{x}. The i-th third dimension
-entry must be a matrix with n rows, having the same structure as \code{y}, filled with the ensemble forecasts or samples of a predictive distribution.
+entry must be a matrix with n rows, having the same structure as \code{y}, filled with the samples of a multivariate predictive distribution.
 Only finite values of \code{y} and \code{x} are used.
 
 The parameter \code{bins} specifies the number of columns for the MVRH. For "large"
@@ -36,11 +38,11 @@ For the calculation of the ranks, different methods are available, where "\code{
 "\code{bd}" stands for "band-depth ranks". These methods are implemented as described in e.g. Thorarinsdottir et al. (2016).
 
 The deviation from uniformity of the MVRH can be quantified by the multivariate reliability index (RI).
-The smaller the RI, the better is the calibration of the forecast. The
-optimal value of the RI is 0.
+The smaller the RI, the more calibrated the forecast is.
+The optimal value of the RI is 0.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 m <- 50
 y <- cbind(rnorm(n), rgamma(n, shape = 1))
@@ -48,7 +50,7 @@ x <- array(NA, dim = c(m, 2, n))
 x[, 1, ] <- rnorm(n*m)
 x[, 2, ] <- rgamma(n*m, shape = 1)
 
-#multivariate entropy calculation
+# multivariate entropy calculation
 ment(y = y, x = x)
 ment(y = y, x = x, bins = 17, method = "bd")
 

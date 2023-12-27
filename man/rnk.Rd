@@ -9,30 +9,29 @@ rnk(y, x, na.rm = FALSE)
 \arguments{
 \item{y}{vector of observations}
 
-\item{x}{matrix of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)}
+\item{x}{matrix of samples of a predictive distribution (depending on \code{y}; see details)}
 
-\item{na.rm}{logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
+\item{na.rm}{logical; if \code{TRUE} NA are stripped before the rank computation proceeds; if \code{FALSE} NA are used in the rank computation; default: \code{FALSE}}
 }
 \value{
 Vector of ranks.
 }
 \description{
-This function calculates the ranks given observations of a one-dimensional variable and ensemble forecasts/samples of a predictive distribution.
+This function calculates the ranks given observations of an univariate variable and samples of a predictive distribution.
 }
 \details{
 For a vector \code{y} of length n, \code{x} should be given as matrix
 with n rows, where the i-th entry of \code{y} belongs to the i-th row
-of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
-or ensemble forecast.
+of \code{x}. The columns of \code{x} represent the samples of a predictive distribution.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 m <- 50
 y <- rnorm(n)
 x <- matrix(rnorm(n*m), ncol = m)
 
-#rank calculation
+# rank calculation
 rnk(y = y, x = x)
 
 }

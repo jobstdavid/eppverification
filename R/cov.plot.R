@@ -4,16 +4,15 @@
 #'
 #' @param x matrix of central prediction interval coverages of different models in \%
 #' @param models character; column names of \code{x} (depending on \code{x}; see details)
-#' @param interval.range numeric; integer(s) between 0 and 100 (see details)
+#' @param nominal.coverage numeric; nominal coverages in \% (see details)
 #' @param colors character; color for each object in \code{models}; default: ggplot2 setting (depending on \code{x}; see details)
 #' @param title character; title of the plot; default: "\code{Interval Coverage}"
 #' @param legend character; position of the legend; default: "\code{right}" (see details)
 #'
 #' @details
 #' For matrix \code{x}, each column contains the central prediction interval coverages of a different model in \%. Consequently
-#' the i-th row entries of \code{x} correspond to the i-th entry in \code{interval.range}. In addition each entry in \code{models} and \code{colors} refers to
-#' the respective column of \code{x}.
-#' Only finite values of \code{x} and \code{interval.range} are used.
+#' the i-th row entries of \code{x} correspond to the i-th entry in \code{nominal.coverage}. In addition each entry in \code{models} and \code{colors} refers to
+#' the respective column of \code{x}. NA's are omitted.
 #'
 #' For the parameter \code{legend} the following options are available: "\code{right}", "\code{left}", "\code{bottom}", "\code{top}", "\code{hide}".
 #'
@@ -23,19 +22,19 @@
 #' ggplot object with line plots of the central prediction interval coverages of different models.
 #'
 #' @examples
-#' #simulated data
+#' # simulated data
 #' n <- 30
 #' x <- matrix(runif(n)*100, ncol = 3)
 #' x <- apply(x, 2, sort)
 #' models <- c("A", "B", "C")
-#' interval.range <- seq(5, 95, length.out = 10)
+#' nominal.coverage <- seq(5, 95, length.out = 10)
 #' colors <- c("darkred", "steelblue", "orange")
 #' title <- "Interval Coverage Comparison"
-#' legend <- "left"
+#' legend <- "bottom"
 #'
-#' #cov.plot plot
-#' cov.plot(x = x, models = models, interval.range = interval.range)
-#' cov.plot(x = x, models = models, interval.range = interval.range,
+#' # cov.plot plot
+#' cov.plot(x = x, models = models, nominal.coverage = nominal.coverage)
+#' cov.plot(x = x, models = models, nominal.coverage = nominal.coverage,
 #' colors = colors, title = title, legend = legend)
 #'
 #' @author David Jobst
@@ -43,34 +42,34 @@
 #' @rdname cov.plot
 #'
 #' @importFrom stats setNames
-#' @importFrom ggplot2 ggplot geom_line geom_point geom_abline scale_x_continuous scale_y_continuous ggtitle aes labs xlab ylab theme element_text theme_bw
+#' @importFrom ggplot2 ggplot geom_line geom_point geom_abline scale_x_continuous scale_y_continuous scale_color_manual ggtitle aes labs xlab ylab theme element_text theme_bw
 #' @export
-cov.plot <- function(x, models, interval.range, colors = NULL, title = "Interval Coverage", legend = "right") {
+cov.plot <- function(x, models, nominal.coverage, colors = NULL, title = "Interval Coverage", legend = "right") {
   if (!is.matrix(x)) {
     stop("'x' should be a matrix!")
   }
   if (!is.vector(models)) {
     stop("'models' should be a vector!")
   }
-  if (!is.vector(interval.range)) {
-    stop("'interval.range' should be a vector!")
+  if (!is.vector(nominal.coverage)) {
+    stop("'nominal.coverage' should be a vector!")
   }
   if (ncol(x) != length(models)) {
     stop("Length of 'models' is not appropriate!")
   }
-  if (nrow(x) != length(interval.range)) {
-    stop("Length of 'interval.range' is not appropriate!")
+  if (nrow(x) != length(nominal.coverage)) {
+    stop("Length of 'nominal.coverage' is not appropriate!")
   }
-  if (any(interval.range <= 0) || any(interval.range >= 100))
-    stop("'interval.range' values should be in the interval (0, 100)!")
+  if (any(nominal.coverage <= 0) || any(nominal.coverage >= 100))
+    stop("'nominal.coverage' values should be in the interval (0, 100)!")
 
-  data <- cbind(x, interval.range)
+  data <- cbind(x, nominal.coverage)
   data <- na.omit(data)
   x <- data[, 1:(ncol(data)-1)]
-  interval.range <- data[, ncol(data)]
+  nominal.coverage <- data[, ncol(data)]
 
-  Legend <- rep(models, each = length(interval.range))
-  range <- rep(interval.range, times = length(models))
+  Legend <- rep(models, each = length(nominal.coverage))
+  range <- rep(nominal.coverage, times = length(models))
   value <- as.vector(x)
   data <- data.frame(Legend, range, value)
 
@@ -81,8 +80,8 @@ cov.plot <- function(x, models, interval.range, colors = NULL, title = "Interval
     theme_bw() +
     scale_x_continuous(limits = c(0, 100)) +
     scale_y_continuous(limits = c(0, 100)) +
-    xlab("Interval Range [%]") +
-    ylab("Interval Coverage [%]") +
+    xlab("Nominal Interval Coverage (%)") +
+    ylab("Observed Interval Coverage (%)") +
     ggtitle(title) +
     theme(plot.title = element_text(face = "bold", hjust = 0.5), legend.position = legend)
 

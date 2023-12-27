@@ -1,37 +1,36 @@
 #' Reliability Index
 #'
-#' This function calculates the Reliability Index (RI) given observations of a one-dimensional variable and ensemble forecasts/samples of a predictive distribution.
+#' This function calculates the Reliability Index (RI) given observations of an univariate variable and samples of a predictive distribution.
 #'
 #' @param y vector of observations
-#' @param x matrix of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
+#' @param x matrix of samples of a predictive distribution (depending on \code{y}; see details)
 #' @param bins numeric; if \code{NULL} the number of bins is equal to \code{ncol(x)+1}; otherwise \code{bins} must be chosen so that \code{(ncol(x)+1)/bins} is an integer; default: \code{NULL} (see details)
-#' @param na.rm logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are stripped before the rank computation proceeds; if \code{FALSE} NA are used in the rank computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{x} should be given as matrix
 #' with n rows, where the i-th entry of \code{y} belongs to the i-th row
-#' of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
-#' or ensemble forecasts.
+#' of \code{x}. The columns of \code{x} represent the samples of a predictive distribution.
 #'
 #' The parameter \code{bins} specifies the number of columns for the VRH. For "large"
 #' \code{ncol(x)} it is often reasonable to reduce the resolution of the VRH by
 #' using \code{bins} so that \code{(ncol(x)+1)/bins} is an integer.
 #'
 #' The deviation from uniformity of the VRH can be quantified by the reliability index (RI).
-#' The smaller the RI, the better is the calibration of the forecast. The
+#' The smaller the RI, the better the calibration of the forecast. The
 #' optimal value of the RI is 0.
 #'
 #' @return
 #' Vector of the score value.
 #'
 #' @examples
-#' #simulated data
+#' # simulated data
 #' n <- 30
 #' m <- 50
 #' y <- rnorm(n)
 #' x <- matrix(rnorm(n*m), ncol = m)
 #'
-#' #ri calculation
+#' # ri calculation
 #' ri(y = y, x = x)
 #' ri(y = y, x = x, bins = 17)
 #'
@@ -64,7 +63,7 @@ ri <- function(y, x, bins = NULL, na.rm = FALSE) {
     bins <- k+1
   }
 
-  #count ranks
+  # count ranks
   tab <- rbind(1:bins, 0)
   cnt <- table(ranks)
   tab[2, as.numeric(names(cnt))] <- as.numeric(cnt)

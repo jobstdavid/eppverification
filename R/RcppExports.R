@@ -9,10 +9,6 @@ crps_sml_cpp <- function(y, x) {
     .Call(`_eppverification_crps_sml_cpp`, y, x)
 }
 
-crps_mc_cpp <- function(y, x) {
-    .Call(`_eppverification_crps_mc_cpp`, y, x)
-}
-
 euclnorm_cpp <- function(x) {
     .Call(`_eppverification_euclnorm_cpp`, x)
 }
@@ -31,5 +27,9 @@ vs_cpp <- function(y, x, w, p) {
 
 ds_cpp <- function(x) {
     .Call(`_eppverification_ds_cpp`, x)
+}
+
+rdist_cpp <- function(x) {
+    .Call(`_eppverification_rdist_cpp`, x)
 }
 

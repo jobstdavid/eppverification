@@ -4,38 +4,39 @@
 \alias{logs}
 \title{Logarithmic Score}
 \usage{
-logs(y, mean = FALSE, na.rm = FALSE)
+logs(y, na.action = na.omit, aggregate = FALSE, ...)
 }
 \arguments{
 \item{y}{vector of density values}
 
-\item{mean}{logical; if \code{TRUE} the mean of the LogS values is calculated for output; if \code{FALSE} the single LogS values are used as output; default: \code{FALSE}}
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.}
 
-\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
+\item{aggregate}{logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+Default: \code{FALSE}, i.e. no aggregation function.}
+
+\item{...}{further arguments passed to the \code{aggregate} function.}
 }
 \value{
 Vector of score value(s).
 }
 \description{
-This function calculates the Logarithmic Score (LogS) given density values of observations of a uni- or multivariate-dimensional predictive distribution.
+This function calculates the Logarithmic Score (LogS) given density values of observations of an uni- or multivariate predictive distribution.
 }
 \details{
-For a predictive density function f the density values \code{y} of observations \code{z} are
-obtained by \code{y} = f(\code{z}). For a "large" number of ensemble forecasts, the density function(s)
-of the ensemble forecasts may be approximated by using, e.g. kernel density
-estimation or by fitting a parametric distribution.
+For a predictive density function f the density values \code{y} of observations \code{x} are
+obtained by \code{y} = f(\code{x}).
 
 A lower LogS indicates a better forecast.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 x <- sample(-10:35, size = n, replace = TRUE)
 y <- dnorm(x = x, mean = 0, sd = 1)
 
-#logs calculation
+# logs calculation
 logs(y = y)
-logs(y = y, mean = TRUE)
+logs(y = y, aggregate = mean)
 
 }
 \references{

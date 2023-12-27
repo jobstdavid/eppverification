@@ -4,52 +4,55 @@
 \alias{vs}
 \title{Variogram Score}
 \usage{
-vs(y, x, w = NULL, p = NULL, mean = FALSE, na.rm = FALSE)
+vs(y, x, p = 0.5, w = NULL, na.action = na.omit, aggregate = FALSE, ...)
 }
 \arguments{
 \item{y}{matrix of observations (see details)}
 
-\item{x}{3-dimensional array of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)}
-
-\item{w}{Quadratic matrix with nonnegative weights; default: matrices with constant weight 1 (see details)}
+\item{x}{3-dimensional array of samples of a predictive distribution (depending on \code{y}; see details)}
 
 \item{p}{positive value; default: \code{p = 0.5} (see details)}
 
-\item{mean}{logical; if \code{TRUE} the mean of the VS values is calculated for output; if \code{FALSE} the single VS values are used as output; default: \code{FALSE}}
+\item{w}{quadratic matrix with non-negative weights; default: \code{NULL}, i.e. matrix with constant weights 1 (see details)}
 
-\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.}
+
+\item{aggregate}{logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+Default: \code{FALSE}, i.e. no aggregation function.}
+
+\item{...}{further arguments passed to the \code{aggregate} function.}
 }
 \value{
 Vector of the score value(s).
 }
 \description{
-This function calculates the Variogram Score (VS) given observations of a multivariate variable and ensemble forecasts/samples of a predictive distribution.
+This function calculates the Variogram Score (VS) given observations of a multivariate variable and samples of a predictive distribution.
 }
 \details{
 The observations are given in the matrix \code{y} with n rows and d columns, where each column belongs to an univariate observation variable.
 The i-th row of matrix \code{y} belongs to the i-th third dimension entry of the array \code{x}. The i-th third dimension
-entry of \code{x} must be a matrix with n rows, having the same structure as \code{y}, filled with the ensemble forecasts or samples of a predictive distribution.
+entry of \code{x} must be a matrix with n rows, having the same structure as \code{y}, filled with samples of a multivariate predictive distribution.
 The quadratic weight matrix \code{w} must have d columns and rows.
 
 A lower VS indicates a better forecast.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 m <- 50
 y <- cbind(rnorm(n), rgamma(n, shape = 1))
 x <- array(NA, dim = c(m, 2, n))
 x[, 1, ] <- rnorm(n*m)
 x[, 2, ] <- rgamma(n*m, shape = 1)
-w <- matrix(c(0.2, 0.8, 0.3, 0.7), ncol = 2, byrow = TRUE)
-p <- 1
+w <- matrix(c(0.2, 0.3, 0.3, 0.7), ncol = 2, byrow = TRUE)
+p <- 2
 
-#vs calculation
-vs(y = y, x = x, mean = FALSE)
-vs(y = y, x = x, mean = TRUE)
+# vs calculation
+vs(y = y, x = x)
+vs(y = y, x = x, aggregate = mean)
 
-vs(y = y, x = x, w = w, p = p, mean = FALSE)
-vs(y = y, x = x, w = w, p = p, mean = TRUE)
+vs(y = y, x = x, w = w, p = p)
+vs(y = y, x = x, w = w, p = p, aggregate = mean)
 
 }
 \references{

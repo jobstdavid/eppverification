@@ -4,42 +4,45 @@
 \alias{bs}
 \title{Brier Score}
 \usage{
-bs(y, z, p, mean = FALSE, na.rm = FALSE)
+bs(y, t, u, na.action = na.omit, aggregate = FALSE, ...)
 }
 \arguments{
 \item{y}{vector of observations}
 
-\item{z}{vector of threshold values (depending on \code{y}; see details)}
+\item{t}{vector of threshold values (depending on \code{y}; see details)}
 
-\item{p}{vector of PIT values in [0,1] (depending on \code{z}; see details)}
+\item{u}{vector of PIT values in [0,1] (depending on \code{t}; see details)}
 
-\item{mean}{logical; if \code{TRUE} the mean of the BS values is calculated for output; if \code{FALSE} the single BS values are used as output; default: \code{FALSE}}
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.}
 
-\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
+\item{aggregate}{logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+Default: \code{FALSE}, i.e. no aggregation function.}
+
+\item{...}{further arguments passed to the \code{aggregate} function.}
 }
 \value{
 Vector of score value(s).
 }
 \description{
-This function calculates the Brier Score (BS) given observations of a one-dimensional variable, thresholds and corresponding PIT values of a predictive distribution.
+This function calculates the Brier Score (BS) given observations of an univariate variable, thresholds and corresponding PIT values of a predictive distribution.
 }
 \details{
 For a vector \code{y} of length n, the i-th entry of \code{y} belongs to the i-th entry
-of \code{z} and \code{p}. For given thresholds \code{z} the PIT values are obtained by
-\code{p}=F(\code{z}) for a predictive distribution F.
+of \code{u} and \code{t}. For given thresholds \code{t} the PIT values are obtained by
+\code{u}=F(\code{t}) for a predictive distribution F.
 
 A lower BS indicates a better forecast.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 y <- rnorm(n)
-z <- sample(-10:35, size = n, replace = TRUE)
-p <- pnorm(z)
+t <- sample(-10:35, size = n, replace = TRUE)
+u <- pnorm(t)
 
-#bs calculation
-bs(y = y, z = z, p = p, mean = FALSE)
-bs(y = y, z = z, p = p, mean = TRUE)
+# bs calculation
+bs(y = y, t = t, u = u)
+bs(y = y, t = t, u = u, aggregate = mean)
 
 }
 \references{

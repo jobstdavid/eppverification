@@ -4,40 +4,43 @@
 \alias{dss}
 \title{Dawid-Sebastiani Score}
 \usage{
-dss(y, x, mu = NULL, mean = FALSE, na.rm = FALSE)
+dss(y, x, mu = NULL, na.action = na.omit, aggregate = FALSE, ...)
 }
 \arguments{
 \item{y}{vector of observations}
 
-\item{x}{matrix of ensemble forecasts/samples of a predictive distribution or vector of variances of ensemble forecasts/a predictive distribution (depending on \code{y}; see details)}
+\item{x}{matrix of samples of a predictive distribution or vector of variances of a predictive distribution (depending on \code{y}; see details)}
 
-\item{mu}{if \code{NULL}, \code{mu} is calculated by the row-wise mean of matrix \code{x}; otherwise \code{mu} must be provided as the means of the ensemble forecasts/predictive distribution; default: \code{NULL} (depending on \code{x}; see details)}
+\item{mu}{if \code{NULL}, \code{mu} is calculated by the row-wise mean of matrix \code{x}; otherwise \code{mu} must provide the means of a predictive distribution; default: \code{NULL} (depending on \code{x}; see details)}
 
-\item{mean}{logical; if \code{TRUE} the mean of the DSS values is calculated for output; if \code{FALSE} the single DSS values are used as output; default: \code{FALSE}}
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.}
 
-\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
+\item{aggregate}{logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+Default: \code{FALSE}, i.e. no aggregation function.}
+
+\item{...}{further arguments passed to the \code{aggregate} function.}
 }
 \value{
 Vector of score value(s).
 }
 \description{
-This function calculates the Dawid-Sebastiani Score (DSS) given observations of a one-dimensional variable and ensemble forecasts/samples of a predictive distribution/parameters.
+This function calculates the Dawid-Sebastiani Score (DSS) given observations of an univariate variable and samples or parameters of a predictive distribution.
 }
 \details{
-For a vector \code{y} of length n, \code{x} can be given as matrix of ensemble forecasts/samples of a predictive distribution
+For a vector \code{y} of length n, \code{x} can be given as matrix of samples of a predictive distribution
 with n rows, where the i-th entry of \code{y} belongs to the i-th row
-of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
-or ensemble forecasts. Consequently \code{mu} must be \code{NULL}. The row-wise
+of \code{x}. The columns of \code{x} represent the samples of a predictive distribution.
+Consequently \code{mu} must be \code{NULL}. The row-wise
 means and variances are determined by its sample versions.
 
-If the variances and means of ensemble forecasts or of a predictive distribution are directly
+If the variances and means of a predictive distribution are directly
 available, \code{x} can be given as vector of variances and \code{mu} can be given as vector of means, where
 the i-th entry of \code{y} belongs to the i-th entry of \code{x} and \code{mu}.
 
 A lower DSS indicates a better forecast.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 m <- 50
 y <- rnorm(n)
@@ -45,16 +48,16 @@ x1 <- matrix(rnorm(n*m), ncol = m)
 x2 <- rep(1, n)
 mu <- rep(0, n)
 
-#dss calculation
-dss(y = y, x = x1, mu = NULL, mean = FALSE)
-dss(y = y, x = x1, mu = NULL, mean = TRUE)
+# dss calculation
+dss(y = y, x = x1, mu = NULL)
+dss(y = y, x = x1, mu = NULL, aggregate = mean)
 
-dss(y = y, x = x2, mu = mu, mean = FALSE)
-dss(y = y, x = x2, mu = mu, mean = TRUE)
+dss(y = y, x = x2, mu = mu)
+dss(y = y, x = x2, mu = mu, aggregate = mean)
 
 }
 \references{
-Dawid, A. and Sebastiani, P. (1999). Coherent disperion criteria for optimal experimental design. Annals of Statistics, 27, 65-81.
+Dawid, A. and Sebastiani, P. (1999). Coherent dispersion criteria for optimal experimental design. Annals of Statistics, 27, 65-81.
 }
 \author{
 David Jobst

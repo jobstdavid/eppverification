@@ -9,8 +9,9 @@ pit.hist(
   bins = NULL,
   type = "density",
   title = "PIT Histogram",
-  v = FALSE,
-  m = FALSE
+  dispersion = FALSE,
+  bias = FALSE,
+  na.action = na.omit
 )
 }
 \arguments{
@@ -22,9 +23,11 @@ pit.hist(
 
 \item{title}{character; title of the plot; default: "\code{PIT Histogram}"}
 
-\item{v}{logical; if \code{TRUE} the variance of the PIT values is calculated for the plot (see details); if \code{FALSE} the variance of the PIT values is not calculated; default: \code{FALSE}}
+\item{dispersion}{logical; if \code{TRUE} the variance of the PIT values is calculated for the plot (see details); if \code{FALSE} the variance of the PIT values is not calculated; default: \code{FALSE}}
 
-\item{m}{logical; if \code{TRUE} the expectation of the PIT values is calculated for the plot (see details); if \code{FALSE} the expectation of the PIT values is not calculated; default: \code{FALSE}}
+\item{bias}{logical; if \code{TRUE} the expectation of the PIT values is calculated for the plot (see details); if \code{FALSE} the expectation of the PIT values is not calculated; default: \code{FALSE}}
+
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.}
 }
 \value{
 ggplot object with a plot of the PIT histogram.
@@ -34,8 +37,7 @@ This function plots the Probability Integral Transform (PIT) Histogram for a pre
 }
 \details{
 The vector \code{u} contains the PIT values \code{u}=F(\code{x}) for a predictive
-distribution F and argument \code{x}.
-Only finite values of \code{u} are used.
+distribution F evaluated at \code{x}.
 
 The parameter \code{bins} specifies the number of columns for the PIT histogram.
 
@@ -48,29 +50,33 @@ PIT histogram indicates overdispersion and a ∪-shape indicates underdispersion
 of the predictive distribution. A systematic bias of the predictive distribution
 results in a triangular shaped PIT histogram.
 
-The variance of the PIT values (Var(PIT)) provides information on the dispersion of a predictive distribution.
+The variance of the PIT values (Var(PIT)) provides information on the dispersion of a predictive distribution subject to calibration.
 A variance of the PIT values equal to 1/12 ≈ 0.0833 corresponds to the variance of the uniform distribution
 on [0,1], which is desirable. A variance greater than 1/12 indicates underdispersion and a
 variance smaller than 1/12 indicates overdispersion of the predictive distribution.
 
-The expectation value of the PIT values (E(PIT)) provides information on the bias of a predictive distribution.
+The expectation value of the PIT values (E(PIT)) provides information on the bias of a predictive distribution subject to calibration.
 An expectation of the PIT values equal to 1/2 corresponds to the expectation of the uniform distribution
 on [0,1], which is desirable. Any deviation from 1/2 indicates that the predictive distribution is biased.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 10000
 u <- runif(n)
 
-#pit plot
+# pit plot
 pit.hist(u = u)
-pit.hist(u = u, bins = 5, title = "PITH", v = TRUE, m = FALSE)
-pit.hist(u = u, bins = 5, type = "relative", v = FALSE, m = TRUE)
-pit.hist(u = u, bins = 5, type = "absolute", v = TRUE, m = TRUE)
+pit.hist(u = u, bins = 5, title = "PITH", dispersion = TRUE, bias = FALSE)
+pit.hist(u = u, bins = 5, type = "relative", dispersion = FALSE, bias = TRUE)
+pit.hist(u = u, bins = 5, type = "absolute", dispersion = TRUE, bias = TRUE)
 
 
 }
 \references{
+Dawid, A. (1984). Present Position and Potential Developments: Some Personal Views: Statistical Theory: The Prequential Approach. 147(2), 278-292.
+
+Gneiting, T., Balabdaoui, F. and Raftery, A. (2007). Probabilistic forecasts, calibration and sharpness. Journal of the Royal Statistical Society, Series B, Statistical Methodology. 69, 243–268.
+
 Czado, C., Gneiting, T. and Held, L. (2009). Predictive Model Assessment for Count Data. Biometrics, 65(4), 1254–1261.
 
 Gneiting, T. and Ranjan, R. (2013). Combining predictive distributions. Electronic Journal of Statistics, 7, 1747-1782.

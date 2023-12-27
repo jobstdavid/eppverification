@@ -4,7 +4,7 @@
 \alias{qs}
 \title{Quantile Score}
 \usage{
-qs(y, q, p, mean = FALSE, na.rm = FALSE)
+qs(y, q, p, na.action = na.omit, aggregate = FALSE, ...)
 }
 \arguments{
 \item{y}{vector of observations}
@@ -13,15 +13,18 @@ qs(y, q, p, mean = FALSE, na.rm = FALSE)
 
 \item{p}{vector of probabilities in (0,1)}
 
-\item{mean}{logical; if \code{TRUE} the mean of the QS values is calculated for output; if \code{FALSE} the single QS values are used as output; default: \code{FALSE}}
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.}
 
-\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
+\item{aggregate}{logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+Default: \code{FALSE}, i.e. no aggregation function.}
+
+\item{...}{further arguments passed to the \code{aggregate} function.}
 }
 \value{
 Vector of score value(s).
 }
 \description{
-This function calculates the Quantile Score (QS) given observations of a one-dimensional variable, probabilities and corresponding quantiles of a predictive distribution.
+This function calculates the Quantile Score (QS) given observations of an univariate variable, probabilities and corresponding quantiles of a predictive distribution.
 }
 \details{
 For a vector \code{y} of length n, the i-th entry of \code{y} belongs to the i-th entry
@@ -31,21 +34,19 @@ of \code{q} and \code{p}. For given probabilities \code{p} the quantile values a
 A lower QS indicates a better forecast.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 y <- rnorm(n)
 p <- runif(n)
 q <- qnorm(p)
 
-#bs calculation
-qs(y = y, q = q, p = p, mean = FALSE)
-qs(y = y, q = q, p = p, mean = TRUE)
+# qs calculation
+qs(y = y, q = q, p = p)
+qs(y = y, q = q, p = p, aggregate = mean)
 
 }
 \references{
-Friedrich, P. and Hense, A. (2007). Statistical downscaling of extreme precipitation events using censored quantile regression. Monthly Weather Review, 135, 2365-2378.
-
-Gneiting, T. and Raftery, A. (2007). Strictly proper scoring rules, prediction, and estimation. Journal of the American Statistical Association, 102, 359-378.
+Gneiting, T. (2011). Making and Evaluating Point Forecasts. Journal of the American Statistical Association, 106(494), 746-762.
 }
 \author{
 David Jobst

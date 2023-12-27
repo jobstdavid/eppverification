@@ -1,23 +1,24 @@
 #' Euclidean Error
 #'
-#' This function calculates the Euclidean Error (EE) given observations of a multivariate variable and ensemble forecasts/samples of a predictive distribution.
+#' This function calculates the Euclidean Error (EE) given observations of a multivariate variable and samples of a predictive distribution.
 #'
 #' @param y matrix of observations (see details)
-#' @param x 3-dimensional array of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
+#' @param x 3-dimensional array of samples of a multivariate predictive distribution (depending on \code{y}; see details)
 #' @param method character; "\code{median}" and "\code{mean}"; default: "\code{median}" (see details)
-#' @param mean logical; if \code{TRUE} the mean of the EE values is calculated for output; if \code{FALSE} the single EE values are used as output; default: \code{FALSE}
-#' @param na.rm logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
+#' @param na.action function to handle the NA's. Default: \code{na.omit}.
+#' @param aggregate logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+#' Default: \code{FALSE}, i.e. no aggregation function.
+#' @param ... further arguments passed to the \code{aggregate} function.
 #'
 #' @details
 #' The observations are given in the matrix \code{y} with n rows, where each column belongs to an univariate observation variable.
 #' The i-th row of matrix \code{y} belongs to the i-th third dimension entry of the array \code{x}. The i-th third dimension
-#' entry must be a matrix with n rows, having the same structure as \code{y}, filled with the ensemble forecasts or samples of a predictive distribution.
-#' Only finite values of \code{y} and \code{x} are used.
+#' entry must be a matrix with n rows, having the same structure as \code{y}, filled with the samples of a multivariate predictive distribution.
 #'
 #' If method "\code{median}" is specified, the multivariate L1-medians (Vardi et Zhang, 2000) of the i-th third dimension entries of \code{x}
 #' are calculated. If method "\code{mean}" is specified, the sample mean vectors of the
-#' i-th third dimension entries of \code{x} are calculated. In both cases, the number of ensemble forecasts or
-#' samples of a predictive distribution should be "large", e.g. 10.000.
+#' i-th third dimension entries of \code{x} are calculated. In both cases, the amount of
+#' samples of the multivariate predictive distribution should be "large", e.g. 10.000.
 #'
 #' A lower EE indicates a better forecast.
 #'
@@ -25,7 +26,7 @@
 #' Vector of the score value(s).
 #'
 #' @examples
-#' #simulated data
+#' # simulated data
 #' n <- 30
 #' m <- 10000
 #' y <- cbind(rnorm(n), rgamma(n, shape = 1))
@@ -33,12 +34,12 @@
 #' x[, 1, ] <- rnorm(n*m)
 #' x[, 2, ] <- rgamma(n*m, shape = 1)
 #'
-#' #ee calculation
-#' ee(y = y, x = x, method = "median", mean = FALSE)
-#' ee(y = y, x = x, method = "median", mean = TRUE)
+#' # ee calculation
+#' ee(y = y, x = x, method = "median")
+#' ee(y = y, x = x, method = "median", aggregate = mean)
 #'
-#' ee(y = y, x = x, method = "mean", mean = FALSE)
-#' ee(y = y, x = x, method = "mean", mean = TRUE)
+#' ee(y = y, x = x, method = "mean")
+#' ee(y = y, x = x, method = "mean", aggregate = mean)
 #'
 #' @references
 #' Gneiting, T., Stanberry, L., Grimit, E., Held, L. and Johnson, N. (2008). Assessing probabilistic forecasts of multivariate quantities, with an application to ensemble predictions of surface winds. Test, 17, 211-264.
@@ -52,10 +53,10 @@
 #' @importFrom pcaPP l1median_VaZh
 #' @importFrom Rfast rowsums colmeans
 #' @export
-ee <- function(y, x, method = "median", mean = FALSE, na.rm = FALSE) {
+ee <- function(y, x, method = "median", na.action = na.omit, aggregate = FALSE, ...) {
   #y is a matrix where the columns represent the obs. variables and the rows stand for the time points
   #x is a 3-dimensional array, where each matrix in that array stands for a time point. In each matrix the columns represent the obs. variables
-  #and the rows represent the number of ensemble members/samples
+  #and the rows represent the number of samples
 
   if (!is.matrix(y)) {
     stop("'y' should be a matrix!")
@@ -90,12 +91,9 @@ ee <- function(y, x, method = "median", mean = FALSE, na.rm = FALSE) {
     stop("This method is not available!")
   }
 
-  if (na.rm == TRUE) {
-    ee.values <- as.vector(na.omit(ee.values))
-  }
-
-  if (mean == TRUE) {
-    ee.values <- mean(ee.values, na.rm = TRUE)
+  ee.values <- as.vector(na.action(ee.values))
+  if (!isFALSE(aggregate)) {
+    ee.values <- do.call(aggregate, list(ee.values, ...))
   }
 
   return(ee.values)

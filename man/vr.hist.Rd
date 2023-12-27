@@ -10,15 +10,15 @@ vr.hist(
   bins = NULL,
   type = "relative",
   title = "Verification Rank Histogram",
-  ri = FALSE,
-  ent = FALSE,
+  reliability = FALSE,
+  entropy = FALSE,
   na.rm = TRUE
 )
 }
 \arguments{
 \item{y}{vector of observations}
 
-\item{x}{matrix of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)}
+\item{x}{matrix of samples of a predictive distribution (depending on \code{y}; see details)}
 
 \item{bins}{numeric; if \code{NULL} the number of bins is equal to \code{ncol(x)+1}; otherwise \code{bins} must be chosen so that \code{(ncol(x)+1)/bins} is an integer; default: \code{NULL} (see details)}
 
@@ -26,23 +26,22 @@ vr.hist(
 
 \item{title}{character; title of the plot; default: "\code{Verification Rank Histogram}"}
 
-\item{ri}{logical; if \code{TRUE} the reliability index is calculated for the plot (see details); if \code{FALSE} the reliability index is not calculated; default: \code{FALSE}}
+\item{reliability}{logical; if \code{TRUE} the reliability index is calculated for the plot (see details); if \code{FALSE} the reliability index is not calculated; default: \code{FALSE}}
 
-\item{ent}{logical; if \code{TRUE} the entropy is calculated for the plot (see details); if \code{FALSE} the entropy  is not calculated; default: \code{FALSE}}
+\item{entropy}{logical; if \code{TRUE} the entropy is calculated for the plot (see details); if \code{FALSE} the entropy  is not calculated; default: \code{FALSE}}
 
-\item{na.rm}{logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{TRUE}}
+\item{na.rm}{logical; if \code{TRUE} NA are stripped before the rank computation proceeds; if \code{FALSE} NA are used in the rank computation; default: \code{FALSE}}
 }
 \value{
 ggplot object with a plot of the Verification Rank Histogram.
 }
 \description{
-This function plots the Verification Rank Histogram (VRH) given observations of a one-dimensional variable and ensemble forecasts/samples of a predictive distribution.
+This function plots the Verification Rank Histogram (VRH) given observations of an univariate variable and samples of a predictive distribution.
 }
 \details{
 For a vector \code{y} of length n, \code{x} should be given as matrix
 with n rows, where the i-th entry of \code{y} belongs to the i-th row
-of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
-or ensemble forecasts.
+of \code{x}. The columns of \code{x} represent the samples of a predictive distribution.
 Only finite values of \code{y} and \code{x} are used.
 
 The parameter \code{bins} specifies the number of columns for the VRH. For "large"
@@ -53,9 +52,9 @@ If \code{type} is "\code{relative}" the relative frequencies of the bins are plo
 If \code{type} is "\code{absolute}" the absolute frequencies of the bins are plotted.
 If \code{type} is "\code{density}" the relative densities of the bins are plotted.
 
-An uniform VRH indicates a calibrated predictive distribution or ensemble forecasts. A ∩-shape in the
+An uniform VRH indicates a calibrated predictive distribution. A ∩-shape in the
 VRH indicates overdispersion and a ∪-shape indicates underdispersion
-of the predictive distribution or ensemble forecasts. A systematic bias of the predictive distribution or ensemble forecasts
+of the predictive distribution. A systematic bias of the predictive distribution
 results in a triangular shaped VRH histogram.
 
 The deviation from uniformity of the VRH can be quantified by the reliability index (RI).
@@ -66,17 +65,17 @@ The entropy is a tool to assess the calibration of a forecast. The optimal
 value of the entropy is 1, representing a calibrated forecast.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 m <- 50
 y <- rnorm(n)
 x <- matrix(rnorm(n*m), ncol = m)
 
-#vr.hist plot
+# vr.hist plot
 vr.hist(y = y, x = x)
-vr.hist(y = y, x = x, bins = 17, title = "VRH", ri = TRUE, ent = FALSE)
-vr.hist(y = y, x = x, bins = 3, type = "absolute", ri = FALSE, ent = TRUE)
-vr.hist(y = y, x = x, bins = 3, type = "density", ri = TRUE, ent = TRUE)
+vr.hist(y = y, x = x, bins = 17, title = "VRH", reliability = TRUE, entropy = FALSE)
+vr.hist(y = y, x = x, bins = 3, type = "absolute", reliability = FALSE, entropy = TRUE)
+vr.hist(y = y, x = x, bins = 3, type = "density", reliability = TRUE, entropy = TRUE)
 
 }
 \references{

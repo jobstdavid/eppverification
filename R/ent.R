@@ -1,17 +1,16 @@
 #' Entropy
 #'
-#' This function calculates the Entropy given observations of a one-dimensional variable and ensemble forecasts/samples of a predictive distribution.
+#' This function calculates the Entropy given observations of a univariate variable and samples of a predictive distribution.
 #'
 #' @param y vector of observations
-#' @param x matrix of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
+#' @param x matrix of samples of a predictive distribution (depending on \code{y}; see details)
 #' @param bins numeric; if \code{NULL} the number of bins is equal to \code{ncol(x)+1}; otherwise \code{bins} must be chosen so that \code{(ncol(x)+1)/bins} is an integer; default: \code{NULL} (see details)
-#' @param na.rm logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{FALSE}
+#' @param na.rm logical; if \code{TRUE} NA are stripped before the rank computation proceeds; if \code{FALSE} NA are used in the rank computation; default: \code{FALSE}
 #'
 #' @details
 #' For a vector \code{y} of length n, \code{x} should be given as matrix
 #' with n rows, where the i-th entry of \code{y} belongs to the i-th row
-#' of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
-#' or ensemble forecasts.
+#' of \code{x}. The columns of \code{x} represent the samples of a predictive distribution.
 #'
 #' The parameter \code{bins} specifies the number of columns for the VRH. For "large"
 #' \code{ncol(x)} it is often reasonable to reduce the resolution of the VRH by
@@ -24,21 +23,17 @@
 #' Vector of the score value.
 #'
 #' @examples
-#' #simulated data
+#' # simulated data
 #' n <- 30
 #' m <- 50
 #' y <- rnorm(n)
 #' x <- matrix(rnorm(n*m), ncol = m)
 #'
-#' #entropy calculation
+#' # entropy calculation
 #' ent(y = y, x = x, bins = 3)
 #'
 #' @references
-#' Delle Monache, L., Hacker, J., Zhou, Y., Deng, X. and Stull, R., (2006). Probabilistic aspects of meteorological and ozone regional ensemble forecasts. Journal of Geophysical Research: Atmospheres, 111, D24307.
-#'
-#' Tribus, M. (1969). Rational Descriptions, Descisions and Designs. Pergamon Press.
-#'
-#' Taillardat, M., Mestre, O., Zamo, M. and Naveau, P., (2016). Calibrated Ensemble Forecasts Using Quantile Regression Forests and Ensemble Model Output Statistics. American Meteorological Society, 144, 2375-2393.
+#' Tribus, M. (1969). Rational Descriptions, Decisions and Designs. Pergamon Press.
 #'
 #' @author David Jobst
 #'
@@ -66,7 +61,7 @@ ent <- function(y, x, bins = NULL, na.rm = FALSE) {
     bins <- k+1
   }
 
-  #count ranks
+  # count ranks
   tab <- rbind(1:bins, 0)
   cnt <- table(ranks)
   tab[2, as.numeric(names(cnt))] <- as.numeric(cnt)

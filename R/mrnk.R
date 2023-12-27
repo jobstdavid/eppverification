@@ -1,16 +1,16 @@
 #' Multivariate Ranks
 #'
-#' This function calculates the ranks given observations of a multivariate variable and ensemble forecasts/samples of a predictive distribution.
+#' This function calculates the ranks given observations of a multivariate variable and samples of a predictive distribution.
 #'
 #' @param y matrix of observations (see details)
-#' @param x 3-dimensional array of ensemble forecasts/samples of a predictive distribution (depending on \code{y}; see details)
+#' @param x 3-dimensional array of samples of a predictive distribution (depending on \code{y}; see details)
 #' @param method character; "\code{mv}", "\code{avg}", "\code{mst}", "\code{bd}"; default: "\code{mv}" (see details)
+#' @param na.rm logical; if \code{TRUE} NA are stripped before the rank computation proceeds; if \code{FALSE} NA are used in the rank computation; default: \code{FALSE}
 #'
 #' @details
 #' The observations are given in the matrix \code{y} with n rows, where each column belongs to an univariate observation variable.
 #' The i-th row of matrix \code{y} belongs to the i-th third dimension entry of the array \code{x}. The i-th third dimension
-#' entry must be a matrix with n rows, having the same structure as \code{y}, filled with the ensemble forecasts or samples of a predictive distribution.
-#' Only finite values of \code{y} and \code{x} are used.
+#' entry must be a matrix with n rows, having the same structure as \code{y}, filled with the samples of a multivariate predictive distribution.
 #'
 #' For the calculation of the ranks, different methods are available, where "\code{mv}" stands for "multivariate ranks",
 #' "\code{avg}" stands for "average ranks", "\code{mst}" stands for "minimum-spanning-tree ranks" and
@@ -20,7 +20,7 @@
 #' Vector of ranks.
 #'
 #' @examples
-#' #simulated data
+#' # simulated data
 #' n <- 30
 #' m <- 50
 #' y <- cbind(rnorm(n), rgamma(n, shape = 1))
@@ -28,7 +28,7 @@
 #' x[, 1, ] <- rnorm(n*m)
 #' x[, 2, ] <- rgamma(n*m, shape = 1)
 #'
-#' #mrnk calculation
+#' # mrnk calculation
 #' mrnk(y = y, x = x, method = "mv")
 #' mrnk(y = y, x = x, method = "avg")
 #' mrnk(y = y, x = x, method = "mst")
@@ -47,13 +47,12 @@
 #'
 #' @rdname mrnk
 #'
-#' @importFrom fields rdist
 #' @importFrom vegan spantree
 #' @export
-mrnk <- function(y, x, method = "mv") {
-  #y is a matrix where the columns represent the obs. variables and the rows stand for the time points
-  #x is a 3-dimensional array, where each matrix in that array stands for a time point. In each matrix the columns represent the obs. variables
-  #and the rows represent the number of ensemble members/samples
+mrnk <- function(y, x, method = "mv", na.rm = FALSE) {
+  # y is a matrix where the columns represent the obs. variables and the rows stand for the time points
+  # x is a 3-dimensional array, where each matrix in that array stands for a time point.
+  # In each matrix the columns represent the obs. variables and the rows represent the number of samples
 
   if (!is.matrix(y)) {
     stop("'y' should be a matrix!")
@@ -75,70 +74,77 @@ mrnk <- function(y, x, method = "mv") {
     stop("The number of columns of the entries of 'x' is not equal with the number of columns of 'y'!")
   }
 
-  index <- which(apply(is.finite(y), 1, all))
-
+  n <- nrow(y)
   rank <- c()
 
   ## Multivariate ranks
   if (method == "mv") {
-    for(i in index) {
-      x.data <- x[, , i]
-      x.data <- matrix(x.data[apply(is.finite(x.data), 1, all), ], ncol = ncol(x.data))
-      data <- cbind(y[i, ], t(x.data))
+    for(i in 1:n) {
+
+      data <- cbind(y[i, ], t(x[, , i]))
+      if (na.rm) {
+        data <- na.omit(data)
+      }
 
       d <- dim(data)
       x.prerank <- numeric(d[2])
       for(i in 1:d[2]) {
         x.prerank[i] <- sum(apply(data <= data[, i], 2, all))
       }
-      x.rank <- rank(x.prerank, ties = "random")[1]
+      x.rank <- rank(x.prerank, na.last = "keep", ties = "random")[1]
 
       rank <- c(rank, x.rank)
     }
     ## Average ranks
   } else if (method == "avg") {
-    for(i in index) {
-      x.data <- x[, , i]
-      x.data <- matrix(x.data[apply(is.finite(x.data), 1, all), ], ncol = ncol(x.data))
-      data <- cbind(y[i, ], t(x.data))
+    for(i in 1:n) {
 
-      x.ranks <- apply(data, 1, rank)
+      data <- cbind(y[i, ], t(x[, , i]))
+      if (na.rm) {
+        data <- na.omit(data)
+      }
+
+      x.ranks <- apply(data, 1, rank, na.last = "keep")
       x.preranks <- apply(x.ranks, 1, mean)
-      x.rank <- rank(x.preranks, ties = "random")[1]
+      x.rank <- rank(x.preranks, na.last = "keep", ties = "random")[1]
 
       rank <- c(rank, x.rank)
     }
     ## Minimum spanning tree ranks
   } else if (method == "mst") {
-    for(i in index) {
-      x.data <- x[, , i]
-      x.data <- matrix(x.data[apply(is.finite(x.data), 1, all), ], ncol = ncol(x.data))
-      data <- cbind(y[i, ], t(x.data))
+    for(i in 1:n) {
+
+      data <- cbind(y[i, ], t(x[, , i]))
+      if (na.rm) {
+        data <- na.omit(data)
+      }
 
       l.mst <- NULL
       for(k in 1:(dim(data)[2])) {
-        euc.dist <- rdist(t(data[, -k]))
+        euc.dist <- rdist_cpp(t(data[, -k]))
         l.mst <- c(l.mst, sum(spantree(euc.dist)$dist))
       }
-      x.rank <- rank(l.mst, ties = "random")[1]
+      x.rank <- rank(l.mst, na.last = "keep", ties = "random")[1]
 
       rank <- c(rank, x.rank)
     }
     ## Band depth ranks
   } else if (method == "bd") {
-    for(i in index) {
-      x.data <- x[, , i]
-      x.data <- matrix(x.data[apply(is.finite(x.data), 1, all), ], ncol = ncol(x.data))
-      data <- cbind(y[i, ], t(x.data))
+    for(i in 1:n) {
+
+      data <- cbind(y[i, ], t(x[, , i]))
+      if (na.rm) {
+        data <- na.omit(data)
+      }
 
       d <- dim(data)
       x.prerank <- array(NA, dim = d)
       for(i in 1:d[1]) {
-        tmp.ranks <- rank(data[i, ])
+        tmp.ranks <- rank(data[i, ], na.last = "keep")
         x.prerank[i, ] <- (d[2] - tmp.ranks) * (tmp.ranks - 1)
       }
       x.rank <- apply(x.prerank, 2, mean) + d[2] - 1
-      x.rank <- rank(x.rank, ties = "random")[1]
+      x.rank <- rank(x.rank, na.last = "keep", ties = "random")[1]
 
       rank <- c(rank, x.rank)
     }

@@ -9,10 +9,10 @@ cpi.plot(
   y,
   lower,
   upper,
-  interval.range,
+  nominal.coverage,
   x.lab = "",
   y.lab = "",
-  title = paste0(interval.range, "\% Central Prediction Interval"),
+  title = paste0(nominal.coverage, "\% Central Prediction Interval"),
   info = FALSE
 )
 }
@@ -21,52 +21,44 @@ cpi.plot(
 
 \item{y}{vector of observations}
 
-\item{lower}{vector with the lower quantiles (depending on \code{interval.range}; see details)}
+\item{lower}{vector with the lower quantiles (depending on \code{nominal.coverage}; see details)}
 
-\item{upper}{vector with the upper quantiles (depending on \code{interval.range}; see details)}
+\item{upper}{vector with the upper quantiles (depending on \code{nominal.coverage}; see details)}
 
-\item{interval.range}{numeric; an integer between 0 and 100 (see details)}
+\item{nominal.coverage}{numeric; nominal coverage in \% (see details)}
 
 \item{x.lab}{character; label of x-axis; default: ""}
 
 \item{y.lab}{character; label of y-axis; default: ""}
 
-\item{title}{character; title of the plot; default: "\code{interval.range\% Central Prediction Interval}"}
+\item{title}{character; title of the plot; default: "\code{nominal.coverage\% Central Prediction Interval}"}
 
-\item{info}{logical; if TRUE the central prediction interval width and coverage are calculated for the plot (see details); if FALSE the central prediction interval width and coverage are not calculated; default: \code{FALSE}}
+\item{info}{logical; if \code{TRUE} the mean central prediction interval width and coverage are calculated for the plot (see details); if \code{FALSE} the mean central prediction interval width and coverage are not calculated; default: \code{FALSE}}
 }
 \value{
 ggplot object with a plot of the central prediction intervals.
 }
 \description{
-This function plots the central prediction intervals given evaluation points, observations of a one-dimensional variable and quantiles of ensemble forecasts/a predictive distribution for a certain interval range.
+This function plots the central prediction intervals given evaluation points, observations of an univariate variable and quantiles of a predictive distribution for a certain interval range.
 }
 \details{
 For \code{x} of length n, \code{y}, \code{lower} and \code{upper} should be given as vector
 of length n, where the i-th entry of \code{x} belongs to the i-th entry of the other vectors.
-Only finite values of \code{x}, \code{y}, \code{lower}, \code{upper} and \code{interval.range} are used.
+NA's are omitted.
 
-For \code{interval.range} only one value is needed. This value will be taken for all quantiles as \code{interval.range}.
-The \code{interval.range} indicates the size of the central prediction interval, i.e. \code{interval.range} corresponds to
-\code{alpha := (100 - interval.range)/100}. Consequently \code{lower} must provide the alpha/2-quantiles and \code{upper} the (1-alpha/2)-quantiles of ensemble forecasts/a predictive distribution.
-Internally, \code{interval.range} will be transformed to \code{alpha}.
+A lower central prediction interval width indicates a sharper forecast.
 
-For ensemble forecasts of size m, it is common to choose \code{interval.range := (m-1)/(m+1)*100}. Consequently \code{lower} must contain
-in each entry the minimum value of the m forecasts and \code{upper} must contain in each entry the maximum value of the m forecasts.
-
-A lower central prediction interval width score indicates a sharper forecast. The optimal value is 0.
-
-A score of the central prediction interval coverage close to \code{interval.range} indicates a more calibrated forecast.
-A central prediction interval coverage score of \code{interval.range} is optimal and indicates a calibrated forecast.
+A score of the central prediction interval coverage close to \code{nominal.coverage} indicates a more calibrated forecast.
+A central prediction interval coverage score of \code{nominal.coverage} is optimal and indicates a calibrated forecast.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 x1 <- 1:n
 x2 <- seq(Sys.Date(), by = "day", length.out = n)
 y <- rnorm(n, mean = 1:n)
-interval.range <- 90
-alpha <- (100-interval.range)/100
+nominal.coverage <- 90
+alpha <- (100-nominal.coverage)/100
 lower <- qnorm(alpha/2, rnorm(n, mean = 1:n))
 upper <- qnorm((1-alpha/2), rnorm(n, mean = 1:n))
 x.lab <- "Date"
@@ -74,11 +66,11 @@ y.lab <- "Value"
 title <- "Central Prediction Interval"
 
 
-#cpi.plot plot
+# cpi.plot plot
 cpi.plot(x = x1, y = y, lower = lower, upper = upper,
-interval.range = interval.range)
+nominal.coverage = nominal.coverage)
 cpi.plot(x = x2, y = y, lower = lower, upper = upper,
-interval.range = interval.range, x.lab = x.lab, y.lab = y.lab,
+nominal.coverage = nominal.coverage, x.lab = x.lab, y.lab = y.lab,
 title = title, info = TRUE)
 
 }

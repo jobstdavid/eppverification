@@ -4,14 +4,19 @@
 \alias{ss}
 \title{Skill Score}
 \usage{
-ss(s1, s2, na.rm = FALSE)
+ss(s1, s2, na.action = na.omit, aggregate = FALSE, ...)
 }
 \arguments{
-\item{s1}{vector of scores from method 1}
+\item{s1}{vector of mean scores from method 1}
 
-\item{s2}{vector of scores from method 2}
+\item{s2}{vector of mean scores from method 2}
 
-\item{na.rm}{logical; if \code{TRUE} NA are stripped before the computation proceeds; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.}
+
+\item{aggregate}{logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+Default: \code{FALSE}, i.e. no aggregation function.}
+
+\item{...}{further arguments passed to the \code{aggregate} function.}
 }
 \value{
 Skill score.
@@ -31,11 +36,12 @@ Skill scores are positively oriented with a maximum value of 1.
 Positive values indicate an improvement of method 1 over method 2, negative values stand for a worse performance of method 1 over method 2.
 }
 \examples{
-#simulated data
+# simulated data
 s1 <- rnorm(100)
 s2 <- rnorm(100)
 
 ss(s1 = s1, s2 = s2)
+ss(s1 = s1, s2 = s2, aggregate = mean)
 
 }
 \references{

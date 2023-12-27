@@ -4,33 +4,35 @@
 \alias{ds}
 \title{Determinant Sharpness}
 \usage{
-ds(x, covmat = FALSE, mean = FALSE, na.rm = FALSE)
+ds(x, covmat = FALSE, na.action = na.omit, aggregate = FALSE, ...)
 }
 \arguments{
-\item{x}{3-dimensional array of ensemble forecasts or covariance matrices of a predictive distribution (see details)}
+\item{x}{3-dimensional array of samples or covariance matrices of a predictive distribution (see details)}
 
-\item{covmat}{logical; if \code{TRUE} the covariance matrices of a predictive distribution are provided by the user in \code{x}; if \code{FALSE} the sample covariance matrix is
-calculated based on the ensemble forecasts of a predictive distribution contained in \code{x}; default: \code{FALSE}}
+\item{covmat}{logical; if \code{TRUE} the covariance matrices of a predictive distribution are provided in \code{x} by the user;
+if \code{FALSE} the sample covariance matrix is calculated based on the samples of a predictive distribution contained in \code{x}; default: \code{FALSE}}
 
-\item{mean}{logical; if \code{TRUE} the mean of the DS values is calculated for output; if \code{FALSE} the single DS values are used as output; default: \code{FALSE}}
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.}
 
-\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
+\item{aggregate}{logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+Default: \code{FALSE}, i.e. no aggregation function.}
+
+\item{...}{further arguments passed to the \code{aggregate} function.}
 }
 \value{
 Vector of the score value(s).
 }
 \description{
-This function calculates the Determinant Sharpness (DS) given covariance matrices of ensemble forecasts/a predictive distribution.
+This function calculates the Determinant Sharpness (DS) given covariance matrices of a predictive distribution.
 }
 \details{
-Each third dimension entry of the array \code{x} must contain a (symmetric) covariance matrix or ensemble forecasts/a predictive distribution.
+Each third dimension entry of the array \code{x} must contain a (symmetric) covariance matrix or samples of a multivariate predictive distribution.
 This covariance matrices are either analytically available or must are estimated by e.g. the sample covariance matrix.
-Only covariance matrices/ensemble forecasts with finite values in \code{x} are used.
 
 A lower DS indicates a sharper forecast.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 m <- 50
 x <- array(NA, dim = c(2, 2, n))
@@ -39,13 +41,13 @@ x[, , i] <- cov(cbind(rnorm(m), rgamma(m, shape = 1)))
 }
 z <- array(rnorm(10000*5*365), dim = c(10000, 5, 365))
 
-#ds calculation with provided covariance matrix
-ds(x = x, covmat = TRUE, mean = FALSE)
-ds(x = x, covmat = TRUE, mean = TRUE)
+# ds calculation with provided covariance matrix
+ds(x = x, covmat = TRUE)
+ds(x = x, covmat = TRUE, aggregate = mean)
 
-#ds calculation without provided covariance matrix
-ds(x = z, covmat = FALSE, mean = FALSE)
-ds(x = z, covmat = FALSE, mean = TRUE)
+# ds calculation without provided covariance matrix
+ds(x = z, covmat = FALSE)
+ds(x = z, covmat = FALSE, aggregate = mean)
 
 }
 \references{

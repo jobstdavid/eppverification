@@ -4,56 +4,60 @@
 \alias{se}
 \title{Squared Error}
 \usage{
-se(y, x, mean = FALSE, na.rm = FALSE)
+se(y, x, na.action = na.omit, aggregate = FALSE, ...)
 }
 \arguments{
 \item{y}{vector of observations}
 
-\item{x}{matrix of ensemble forecasts/samples of a predictive distribution or vector of means of ensemble forecasts/a predictive distribution (depending on \code{y}; see details)}
+\item{x}{matrix of samples of a predictive distribution or vector containing the means of a predictive distribution (depending on \code{y}; see details)}
 
-\item{mean}{logical; if \code{TRUE} the mean of the SE values is calculated for output; if \code{FALSE} the single SE values are used as output; default: \code{FALSE}}
+\item{na.action}{function to handle the NA's. Default: \code{na.omit}.}
 
-\item{na.rm}{logical; if \code{TRUE} NA are removed after the computation; if \code{FALSE} NA are used in the computation; default: \code{FALSE}}
+\item{aggregate}{logical or function for aggregating the single scores, e.g. \code{sum}, \code{mean}, \code{weighted.mean}, ....
+Default: \code{FALSE}, i.e. no aggregation function.}
+
+\item{...}{further arguments passed to the \code{aggregate} function.}
 }
 \value{
 Vector of score value(s).
 }
 \description{
-This function calculates the Squared Error (SE) given observations of a one-dimensional variable and ensemble forecasts/samples of a predictive distribution.
+This function calculates the Squared Error (SE) given observations of an univariate variable and samples of a predictive distribution.
 }
 \details{
-For a vector \code{y} of length n, \code{x} can be given as matrix of ensemble forecasts/samples
+For a vector \code{y} of length n, \code{x} can be given as matrix of samples of a predictive distribution
 with n rows, where the i-th entry of \code{y} belongs to the i-th row
-of \code{x}. The columns of \code{x} represent the samples of a predictive distribution
-or ensemble forecasts. The row-wise means are determined by its sample version.
+of \code{x}. The columns of \code{x} represent the samples of a predictive distribution.
+The row-wise means are determined by its sample version.
 
-If the means of ensemble forecasts or of a predictive distribution are directly
+If the means of a predictive distribution are directly
 available, \code{x} can be given as vector of means, where
 the i-th entry of \code{y} belongs to the i-th entry of \code{x}.
 
-In addition, with this function, the Mean Squared Error (MSE) and Root Mean Squares Error (RMSE) can be calculated (see examples).
+In addition, with this function, the Mean Squared Error (MSE) by specifying \code{aggregate = mean} and
+Root Mean Squares Error (RMSE) can be calculated (see examples).
 
 A lower SE indicates a better forecast.
 }
 \examples{
-#simulated data
+# simulated data
 n <- 30
 m <- 50
 y <- rnorm(n)
 x1 <- matrix(rnorm(n*m), ncol = m)
 x2 <- apply(x1, 1, mean)
 
-#ae calculation
-se(y = y, x = x1, mean = FALSE)
-se(y = y, x = x1, mean = TRUE)
+# ae calculation
+se(y = y, x = x1)
+se(y = y, x = x1, aggregate = mean)
 
-se(y = y, x = x2, mean = FALSE)
-(mse <- se(y = y, x = x2, mean = TRUE))
+se(y = y, x = x2)
+(mse <- se(y = y, x = x2, aggregate = mean))
 (rmse <- sqrt(mse))
 
 }
 \references{
-Vannitsem, S., Wilks, D. and Messner, J. (2018). Statistical Postprocessing of Ensemble Forecasts. Elsevier. 164.
+Gneiting, T. (2011). Making and Evaluating Point Forecasts. Journal of the American Statistical Association, 106(494), 746-762.
 }
 \author{
 David Jobst

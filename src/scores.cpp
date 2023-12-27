@@ -61,32 +61,6 @@ arma::rowvec crps_sml_cpp(arma::rowvec y, arma::mat x){
 
 }
 
-// [[Rcpp::export]]
-arma::rowvec crps_mc_cpp(arma::rowvec y, arma::mat x){
-
-  int m = x.n_rows;
-  int d = x.n_cols;
-  arma::rowvec out(m);
-  arma::rowvec exy(m);
-  arma::rowvec exx(m);
-
-  for (int k = 1; k < (m+1); k++) {
-
-    arma::rowvec xtmp = x.row(k-1);
-    exy(k-1) = sum(abs(xtmp - y(k-1)));
-
-    for (int i = 1; i < d; i++) {
-      exx(k-1) += abs(xtmp(i-1) - xtmp(i));
-    }
-
-  }
-
-
-  out = exy/d - exx/(2*(d-1));
-
-  return out;
-
-}
 
 // multivariate scoring rules
 
@@ -299,4 +273,25 @@ arma::mat l1median_cpp(arma::cube X, double maxit, double tol, double zero_tol) 
 
 }
 
+// euclidean distance for mvr.hist
+// [[Rcpp::export]]
+arma::mat rdist_cpp(arma::mat x){
+
+  int m = x.n_rows;
+  int d = x.n_cols;
+  arma::mat out(m,m);
+  arma::mat y(m,d);
+  arma::vec z(m);
+
+  for (int k = 1; k < (m+1); k++) {
+    y = x.each_row()-x.row(k-1);
+    y = pow(y, 2);
+    z = sum(y, 1);
+    z = pow(z, 0.5);
+    out.col(k-1) = z;
+  }
+
+  return out;
+
+}
 

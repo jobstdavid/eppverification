@@ -24,18 +24,17 @@ This function plots scores of different models rated by selected measures as hea
 \details{
 For matrix \code{x}, each row contains the scores of one measure and
 each columns contains the scores belonging to one model.
-Only finite values of \code{x} are used.
 
 The brighter the color in the plot, the lower the score is.
 }
 \examples{
-#simulated data
+# simulated data
 x <- matrix(c(0.5, 0.3, 0.8, 0.21, 1.5, 0.7, 2, 1), byrow = TRUE, ncol = 4)
 models <- c("A", "B", "C", "D")
 measures <- c("CRPS", "LogS")
 title <- ""
 
-#score.plot plot
+# score.plot plot
 score.plot(x = x, models = models, measures = measures)
 score.plot(x = x, models = models, measures = measures, title = title)
 

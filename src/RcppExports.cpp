@@ -35,18 +35,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// crps_mc_cpp
-arma::rowvec crps_mc_cpp(arma::rowvec y, arma::mat x);
-RcppExport SEXP _eppverification_crps_mc_cpp(SEXP ySEXP, SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::rowvec >::type y(ySEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(crps_mc_cpp(y, x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // euclnorm_cpp
 double euclnorm_cpp(arma::rowvec x);
 RcppExport SEXP _eppverification_euclnorm_cpp(SEXP xSEXP) {
@@ -107,16 +95,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rdist_cpp
+arma::mat rdist_cpp(arma::mat x);
+RcppExport SEXP _eppverification_rdist_cpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdist_cpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_eppverification_crps_cpp", (DL_FUNC) &_eppverification_crps_cpp, 2},
     {"_eppverification_crps_sml_cpp", (DL_FUNC) &_eppverification_crps_sml_cpp, 2},
-    {"_eppverification_crps_mc_cpp", (DL_FUNC) &_eppverification_crps_mc_cpp, 2},
     {"_eppverification_euclnorm_cpp", (DL_FUNC) &_eppverification_euclnorm_cpp, 1},
     {"_eppverification_es_cpp", (DL_FUNC) &_eppverification_es_cpp, 2},
     {"_eppverification_es_mc_cpp", (DL_FUNC) &_eppverification_es_mc_cpp, 2},
     {"_eppverification_vs_cpp", (DL_FUNC) &_eppverification_vs_cpp, 4},
     {"_eppverification_ds_cpp", (DL_FUNC) &_eppverification_ds_cpp, 1},
+    {"_eppverification_rdist_cpp", (DL_FUNC) &_eppverification_rdist_cpp, 1},
     {NULL, NULL, 0}
 };
 
