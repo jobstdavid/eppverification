@@ -1,3 +1,7 @@
+# eppverification 0.4.1 (April 14, 2024)
+
+- changed interval limits in `cpi`
+
 # eppverification 0.4.0 (December 27, 2023)
 
 **Note**: Most of the following changes serve as preparation for the next version with groundbreaking innovations!
@@ -24,7 +28,7 @@
 - removed the functions `map.plot` and `box.plot`. 
 
 
-# eppverification 0.2.0 (Januar 9, 2022)
+# eppverification 0.2.0 (January 9, 2022)
 
 - new function `dm.test` to perform a Diebold-Mariano-Test for two forecasts.
 - new function `m.pit` to calculate mean of PIT values.
