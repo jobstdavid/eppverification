@@ -99,7 +99,7 @@ cpi <- function(y, lower, upper, nominal.coverage, separate = "is", na.action = 
   overprediction <- 2/alpha * (lower - y) * (y < lower)
   underprediction <- 2/alpha * (y - upper) * (y > upper)
   is <- width + underprediction + overprediction
-  coverage <- 1*(lower < y & y < upper)
+  coverage <- 1*(lower <= y & y <= upper)
   cpi.values <- list(is = is, overprediction = overprediction, underprediction = underprediction, width = width, coverage = coverage)
 
   cpi.values <- cpi.values[separate]
