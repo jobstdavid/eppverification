@@ -234,5 +234,9 @@ score.plot(x = x, models = models, measures = measures)
 
 Feel free to contact [jobstd@uni-hildesheim.de](mailto:jobstd@uni-hildesheim.de) if you have any questions or suggestions.
 
+## References
+Gneiting, T. and Raftery, A. (2007). Strictly Proper Scoring Rules,
+Prediction, and Estimation. Journal of the American Statistical
+Association. 102(477). 359-378.
 
 
